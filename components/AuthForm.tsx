@@ -16,7 +16,8 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-// import { createAccount, signInUser } from "@/lib/actions/user.actions";
+import { createAccount, signinUser } from "@/lib/actions/user.actions";
+import OTPModal from "./OTPModal";
 // import OtpModal from "@/components/OTPModal";
 
 type FormType = "sign-in" | "sign-up";
@@ -45,26 +46,26 @@ const AuthForm = ({ type }: { type: FormType }) => {
     },
   });
 
-  //   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-  //     setIsLoading(true);
-  //     setErrorMessage("");
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    setIsLoading(true);
+    setErrorMessage("");
 
-  //     try {
-  //       const user =
-  //         type === "sign-up"
-  //           ? await createAccount({
-  //               fullName: values.fullName || "",
-  //               email: values.email,
-  //             })
-  //           : await signInUser({ email: values.email });
+    try {
+      const user =
+        type === "sign-up"
+          ? await createAccount({
+              fullname: values.fullName || "",
+              email: values.email,
+            })
+          : await signinUser({ email: values.email });
 
-  //       setAccountId(user.accountId);
-  //     } catch {
-  //       setErrorMessage("Failed to create account. Please try again.");
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   };
+      setAccountId(user.accountId);
+    } catch {
+      setErrorMessage("Failed to create account. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <>
@@ -146,7 +147,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
                 : "Already have an account?"}
             </p>
             <Link
-              href={type === "sign-in" ? "/sign-up" : "/sign-in"}
+              href={type === "sign-in" ? "/signup" : "/signin"}
               className="ml-1 font-medium text-brand"
             >
               {" "}
@@ -156,9 +157,9 @@ const AuthForm = ({ type }: { type: FormType }) => {
         </form>
       </Form>
 
-      {/* {accountId && (
-        <OtpModal email={form.getValues("email")} accountId={accountId} />
-      )} */}
+      {accountId && (
+        <OTPModal email={form.getValues("email")} accountId={accountId} />
+      )}
     </>
   );
 };
