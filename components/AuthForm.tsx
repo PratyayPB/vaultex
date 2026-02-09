@@ -138,7 +138,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
             )}
           </Button>
 
-          {errorMessage && <p className="error-message">*{errorMessage}</p>}
+          {errorMessage && <p className="error-message">{errorMessage}</p>}
 
           <div className="body-2 flex justify-center">
             <p className="text-light-100">
@@ -158,7 +158,11 @@ const AuthForm = ({ type }: { type: FormType }) => {
       </Form>
 
       {accountId && (
-        <OTPModal email={form.getValues("email")} accountId={accountId} />
+        <OTPModal
+          email={form.getValues("email")}
+          accountId={accountId}
+          onClose={() => setAccountId(null)}
+        />
       )}
     </>
   );

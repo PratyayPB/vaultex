@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import {
   AlertDialog,
@@ -8,52 +9,62 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import {
   InputOTP,
   InputOTPGroup,
-  InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { verifySecret, sendEmailOTP } from "@/lib/actions/user.actions";
 
-const OTPModal = ({
-  email,
-  accountId,
-}: {
+type OTPModalProps = {
   email: string;
   accountId: string;
-}) => {
+  onClose: () => void;
+};
+
+const OTPModal = ({ email, accountId, onClose }: OTPModalProps) => {
+  const router = useRouter();
+
   const [isLoading, setIsLoading] = useState(false);
   const [password, setPassword] = useState("");
   const [isOpen, setIsOpen] = useState(true);
 
-  const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setIsLoading(true);
     try {
+      const sessionId = await verifySecret({ accountId, password });
+      if (sessionId) router.push("/");
     } catch (error) {
       console.error("Failed to verify OTP:", error);
     }
     setIsLoading(false);
   };
 
-  const handleResendOTP = () => {
-    //API call to resend OTP
+  const handleResendOTP = async () => {
+    await sendEmailOTP({ email });
   };
 
   return (
     <>
-      <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+      <AlertDialog
+        open={isOpen}
+        onOpenChange={(open) => {
+          setIsOpen(open);
+          if (!open) onClose();
+        }}
+      >
         <AlertDialogContent className="shad-alert-dialog">
           <AlertDialogHeader className="relative flex justify-center">
             <AlertDialogTitle className="h2 text-center">
               Enter your OTP
               <Image
-                src="../public/assets/icons/close-dark.svg"
+                src="/assets/icons/close-dark.svg"
                 alt="close"
                 width={20}
                 height={20}
@@ -85,7 +96,7 @@ const OTPModal = ({
                 Submit
                 {isLoading && (
                   <Image
-                    src="../public/assets/icons/loader.svg"
+                    src="/assets/icons/loader.svg"
                     alt="loader"
                     width={24}
                     height={24}
@@ -105,7 +116,14 @@ const OTPModal = ({
                 </Button>
               </div>
             </div>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel
+              onClick={() => {
+                setIsOpen(false);
+                onClose();
+              }}
+            >
+              Cancel
+            </AlertDialogCancel>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

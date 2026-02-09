@@ -7,6 +7,7 @@ import { parseStringify } from "../utils";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { error } from "console";
+import { avatarPlaceholderURL } from "@/constants";
 
 export const getUserByEmail = async (email: string) => {
   const { databases } = await createAdminClient();
@@ -53,7 +54,7 @@ export const createAccount = async ({
       {
         fullName: fullname,
         email,
-        avatar: "https://cdn-icons-png.flaticon.com/512/3541/3541871.png",
+        avatar: avatarPlaceholderURL,
         accountId,
       },
     );
@@ -107,4 +108,19 @@ export const signinUser = async ({ email }: { email: string }) => {
   } catch (error) {
     handleError(error, "Failed to sign in user");
   }
+};
+
+export const getCurrentUser = async () => {
+  const { databases, account } = await createSessionClient();
+  const result = await account.get();
+  const user = await databases.listDocuments(
+    appwriteConfig.databaseID,
+    appwriteConfig.usersCollectionID,
+    [Query.equal("accountId", [result.$id])],
+  );
+
+  if (user.total <= 0) {
+    return null;
+  }
+  return parseStringify(user.documents[0]);
 };
