@@ -72,3 +72,4 @@ declare interface ShareInputProps {
   onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onRemove: (email: string) => void;
 }
+export const MAX_FILE_SIZE = 50 * 1024 * 1024; //50MB

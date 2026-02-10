@@ -21,7 +21,7 @@ import FileUploader from "./FileUploader";
 import { signOutUser } from "@/lib/actions/user.actions";
 
 interface MobileNavProps {
-  ownerId: string;
+  $id: string;
   accountId: string;
   avatar: string;
   fullName: string;
@@ -29,7 +29,7 @@ interface MobileNavProps {
 }
 
 const MobileNav = ({
-  ownerId,
+  $id: ownerId,
   accountId,
   avatar,
   fullName,
