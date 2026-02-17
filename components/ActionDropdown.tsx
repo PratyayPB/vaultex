@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 
 import { Button } from "@/components/ui/button";
@@ -10,7 +12,6 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-
 } from "@/components/ui/dropdown-menu";
 import {
   Dialog,
@@ -19,85 +20,130 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Models } from "node-appwrite";
 import { useState } from "react";
 import { constructDownloadUrl } from "@/lib/utils";
 import Link from "next/link";
 import { Input } from "./ui/input";
-import { renameFile, updateFileUsers } from "@/lib/actions/file.actions";
+import {
+  renameFile,
+  updateFileUsers,
+  deleteFile,
+} from "@/lib/actions/file.actions";
 import { usePathname } from "next/navigation";
-import {FileDetails} from "./ActionsModalContent";
+import { FileDetails, ShareInput } from "./ActionsModalContent";
+import { ActionType } from "@/types";
+import { actionsDropdownItems } from "@/constants";
 
 const ActionDropdown = ({ file }: { file: Models.Document }) => {
   const [isModalOpen, setisModalOpen] = useState(false);
   const [isDropdownOpen, setisDropdownOpen] = useState(false);
-  const [action, setaction] = useState<ActionType | null>(null)
-  const [name, setname] = useState(file.name)
-  const [isLoading, setisLoading] = useState(second)
-  const [emails, setemails] = useState<string[]>([])
-  const path=usePathname()
-  const closeAllModals=()=>{
-    setisModalOpen(false)
-    setisDropdownOpen(false)
-    setaction(null)
-    setname(file.name)
+  const [action, setaction] = useState<ActionType | null>(null);
+  const [name, setname] = useState(file.name);
+  const [isLoading, setisLoading] = useState(false);
+  const [emails, setemails] = useState<string[]>([]);
+  const path = usePathname();
+  const closeAllModals = () => {
+    setisModalOpen(false);
+    setisDropdownOpen(false);
+    setaction(null);
+    setname(file.name);
     //setEmails([])
-  }
+  };
 
-  const handleAction=async()=>{
-    if(!action) return
-    setisLoading(true)
-    let success=false
-    const actions={
-      rename:()=>renameFile({fileId,name,extension,path,}:{fileId=file.$id,name,extension:file.extension,path}),
-      share:()=>{updateFileUsers({fileId,emails,path}:{fileId:file.$id,emails,path})},
-      delete:()=>{deleteFile({fileId,path,bucketFileId}:{fileId:file.$id,path,file.bucketFileId})}
-
+  const handleAction = async () => {
+    if (!action) return;
+    setisLoading(true);
+    let success = false;
+    const actions = {
+      rename: () =>
+        renameFile({ fileId: file.$id, name, extension: file.extension, path }),
+      share: () => {
+        updateFileUsers({ fileId: file.$id, emails, path });
+      },
+      delete: () => {
+        deleteFile({ fileId: file.$id, path, bucketFileId: file.bucketFileId });
+      },
+    };
+    success = await actions[action.value as keyof typeof actions]();
+    if (success) {
+      closeAllModals();
     }
-    success=await actions[action.value as keyof typeof actions]()
-    if(success){
-      closeAllModals()
-    }
-    setisLoading(false)
+    setisLoading(false);
+  };
 
-  }
+  const handleRemoveUser = async ({ email }: { email: string }) => {
+    const updatedEmails = emails.filter((e) => e !== email);
+    const success = await updateFileUsers({
+      fileId: file.$id,
+      emails: updatedEmails,
+      path,
+    });
+    if (!success) setemails(updatedEmails);
+    closeAllModals();
+  };
+  const renderDialogContent = () => {
+    if (!action) return null;
 
-  const handleRemoveUser=async({email}:{email:string})=>{
-    const updatedEmails=emails.filter((e)=>e!==email)
-    const success=await updateFileUsers({fileId:file.$id,emails:updatedEmails,path})
-    if(!success) setemails(updatedEmails)
-      closeAllModals()
-
-  }
-  const renderDialogContent=()=>{
-    if(!action) return null
-
-    const {value,label}=action
-return ( <DialogContent className="shad-dialog button">
-    <DialogHeader className="flex flex-col gap-3">
-      <DialogTitle className="text-center text-light-100">{label}</DialogTitle>
-      {value==="rename" && (<Input type="text" value={name} onChange={(e)=>{setName(e.target.value)}}/>)}
-      {value==="details" && (<FileDetails file={file}/>)}
-      {value==="share" && (<ShareInput file={ file } onInputChange={setemails} onRemove={handleRemoveUser}/>)}
-      {value==="delete" && (
-        <p className="delete-confirmation">Are you sure you want to delete {` `} <span className="delete-file-name">{file.name}</span>?</p>
-      )}
-    </DialogHeader>
-    {['rename','share','delete'].includes(value) && (
-      <DialogFooter className="flex flex-col gap-3 md:flex-row">
-        <Button onClick={closeAllModals} className="modal-cancel-button">Cancel</Button>
-        <Button onClick={handleAction} className="modal-submit-button"><p className="capitalize">{value}</p>
-        {isLoading && <Image src="assets/icons/loader.svg" width={24} height={24} className="animate-spin" alt="loader"/>}
-        </Button>
-      </DialogFooter>
-    )}
-  </DialogContent>)
-  }
+    const { value, label } = action;
+    return (
+      <DialogContent className="shad-dialog button">
+        <DialogHeader className="flex flex-col gap-3">
+          <DialogTitle className="text-center text-light-100">
+            {label}
+          </DialogTitle>
+          {value === "rename" && (
+            <Input
+              type="text"
+              value={name}
+              onChange={(e) => {
+                setname(e.target.value);
+              }}
+            />
+          )}
+          {value === "details" && <FileDetails file={file} />}
+          {value === "share" && (
+            <ShareInput
+              file={file}
+              onInputChange={setemails}
+              onRemove={handleRemoveUser}
+            />
+          )}
+          {value === "delete" && (
+            <p className="delete-confirmation">
+              Are you sure you want to delete {` `}{" "}
+              <span className="delete-file-name">{file.name}</span>?
+            </p>
+          )}
+        </DialogHeader>
+        {["rename", "share", "delete"].includes(value) && (
+          <DialogFooter className="flex flex-col gap-3 md:flex-row">
+            <Button onClick={closeAllModals} className="modal-cancel-button">
+              Cancel
+            </Button>
+            <Button onClick={handleAction} className="modal-submit-button">
+              <p className="capitalize">{value}</p>
+              {isLoading && (
+                <Image
+                  src="assets/icons/loader.svg"
+                  width={24}
+                  height={24}
+                  className="animate-spin"
+                  alt="loader"
+                />
+              )}
+            </Button>
+          </DialogFooter>
+        )}
+      </DialogContent>
+    );
+  };
   return (
     <Dialog open={isModalOpen} onOpenChange={setisModalOpen}>
       <DropdownMenu open={isDropdownOpen} onOpenChange={setisDropdownOpen}>
-        <DropdownMenuTrigger asChild clasname="shad-no-focus">
+        <DropdownMenuTrigger asChild className="shad-no-focus">
           <Image
             src="/assets/icons/dots.svg"
             alt="dots"
@@ -116,21 +162,41 @@ return ( <DialogContent className="shad-dialog button">
               <DropdownMenuItem
                 key={actionItem.value}
                 className="shad-dropdown=item"
-                onClick={()={
-                    setAction(actionItem)
+                onClick={() => {
+                  setaction(actionItem);
 
-                    if(["rename","share","delete","details"].includes(actionItem.value)){
-                      setisModalOpen(true)
-                    }
+                  if (
+                    ["rename", "share", "delete", "details"].includes(
+                      actionItem.value,
+                    )
+                  ) {
+                    setisModalOpen(true);
+                  }
                 }}
-
               >
-
-              {ActionDidRevalidateDynamicOnly.value==="download"?  <Link href={constructDownloadUrl(file.bucketFileId)}
-                download={file.name} className="flex items-center gap-2">
-                  <Image src={actionItem.icon} width={30} height={30} alt={actionItem.label}/>
-                  </Link>: <div className="flex items-center gap-2"><Image src={actionItem.icon} width={30} height={30} alt={actionItem.label}/></div> }
-
+                {actionItem.value === "download" ? (
+                  <Link
+                    href={constructDownloadUrl(file.bucketFileId)}
+                    download={file.name}
+                    className="flex items-center gap-2"
+                  >
+                    <Image
+                      src={actionItem.icon}
+                      width={30}
+                      height={30}
+                      alt={actionItem.label}
+                    />
+                  </Link>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <Image
+                      src={actionItem.icon}
+                      width={30}
+                      height={30}
+                      alt={actionItem.label}
+                    />
+                  </div>
+                )}
 
                 {actionItem.label}
               </DropdownMenuItem>
@@ -139,7 +205,7 @@ return ( <DialogContent className="shad-dialog button">
         </DropdownMenuContent>
       </DropdownMenu>
 
-     { renderDialogContent() }
+      {renderDialogContent()}
     </Dialog>
   );
 };

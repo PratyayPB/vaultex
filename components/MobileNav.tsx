@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Separator } from "./ui/separator";
-import { navitems } from "@/constants";
+import { navItems } from "@/constants";
 import FileUploader from "./FileUploader";
 import { signOutUser } from "@/lib/actions/user.actions";
 
@@ -76,7 +76,7 @@ const MobileNav = ({
             </SheetTitle>
             <nav className="mobile-nav">
               <ul className="mobile-nav-list">
-                {navitems.map(({ url, name, icon }) => (
+                {navItems.map(({ url, name, icon }) => (
                   <Link key={name} href={url} className="lg:w-full">
                     <li
                       className={cn(
@@ -102,7 +102,7 @@ const MobileNav = ({
             </nav>
             <Separator className="my-5 bg-light-200/20" />
             <div className="flex flex-col justify-between gap-5">
-              <FileUploader />
+              {/* <FileUploader /> */}
               <Button
                 type="submit"
                 className="mobile-sign-out-button"

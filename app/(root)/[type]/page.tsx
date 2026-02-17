@@ -4,6 +4,7 @@ import Sort from "@/components/Sort";
 import { getFiles } from "@/lib/actions/file.actions";
 import Card from "@/components/Card";
 import { getFileTypesParams } from "@/lib/utils";
+import { Models } from "node-appwrite";
 
 const Page = async ({ searchParams, params }: SearchParamProps) => {
   const type = ((await params)?.type as string) || "";
@@ -32,7 +33,8 @@ const Page = async ({ searchParams, params }: SearchParamProps) => {
 
       {/* Render Files */}
 
-      {files.total > 0 ? (
+      {/* {files.total > 0 ? ( */}
+      {0 > 0 ? (
         <section className="file-list">
           {files.documents.map((file: Models.Document) => (
             <h1 className="h1" key={file.$id}>

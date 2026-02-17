@@ -2,13 +2,21 @@
 import { InputFile } from "node-appwrite/file";
 import { createAdminClient } from "../appwrite";
 import { appwriteConfig } from "../appwrite/config";
-import { ID } from "node-appwrite";
-import { getFileType, parseStringify } from "../utils";
-import { url } from "inspector";
-import { error } from "console";
-import { GetFilesProps } from "@/types";
+import { ID, Models, Query } from "node-appwrite";
+import { getFileType, parseStringify, constructFileUrl } from "../utils";
+
+// import { url } from "inspector";
+// import { error } from "console";
+import {
+  GetFilesProps,
+  UploadFileProps,
+  RenameFileProps,
+  UpdateFileUsersProps,
+  DeleteFileProps,
+} from "@/types";
 import { revalidatePath } from "next/cache";
-export const handleError = (error: unknown, message: string) => {
+import { getCurrentUser } from "./user.actions";
+export const handleError = async (error: unknown, message: string) => {
   console.log(error, message);
   throw error;
 };
@@ -24,7 +32,7 @@ export const uploadFile = async ({
     const bucketFile = await storage.createFile(
       appwriteConfig.bucketID,
       ID.unique(),
-      inputFile
+      inputFile,
     );
 
     const fileDocument = {
@@ -43,7 +51,7 @@ export const uploadFile = async ({
         appwriteConfig.databaseID,
         appwriteConfig.filesCollectionID,
         ID.unique(),
-        fileDocument
+        fileDocument,
       )
       .catch(async (error: unknown) => {
         await storage.deleteFile(appwriteConfig.bucketID, bucketFile.$id);
@@ -56,20 +64,59 @@ export const uploadFile = async ({
   }
 };
 
+const createQueries = (
+  currentUser: Models.Document,
+  types: string[] = [],
+  searchText: string,
+  sort: string,
+  limit: number,
+) => {
+  // const queries = [
+  //  Query.or([queries:[ Query.equal("owner", [currentUser.$id]),
+  //   Query.contains("user", [currentUser.email]),])
+  // ];
 
-export const getFiles = async ({types=[],searchText="",sort=`$createdAt-desc`,limit}: GetFilesProps) => {
+  const queries = [
+    Query.or([
+      Query.equal("owner", [currentUser.$id]),
+      Query.contains("users", [currentUser.email]),
+    ]),
+  ];
+
+  if (types.length > 0) queries.push(Query.equal("type", types));
+  if (searchText) queries.push(Query.contains("name", searchText));
+  if (limit) queries.push(Query.limit(limit));
+
+  if (sort) {
+    const [sortBy, orderBy] = sort.split("-");
+
+    queries.push(
+      orderBy === "asc" ? Query.orderAsc(sortBy) : Query.orderDesc(sortBy),
+    );
+  }
+
+  return queries;
+};
+
+export const getFiles = async ({
+  types = [],
+  searchText = "",
+  sort = `$createdAt-desc`,
+  limit,
+}: GetFilesProps) => {
   const databases = await createAdminClient();
   try {
     const currentUser = await getCurrentUser();
     if (!currentUser) {
-      throw new Error("User not found");
+      return null;
+      // throw new Error("User not found");
     }
 
-    const queries = createQueries(currentUser,types,searchText,sort,limit);
+    const queries = createQueries(currentUser, types, searchText, sort, limit);
     const files = await databases.listDocuments(
       appwriteConfig.databaseID,
       appwriteConfig.filesCollectionID,
-      queries
+      queries,
     );
 
     return parseStringify(files);
@@ -78,23 +125,6 @@ export const getFiles = async ({types=[],searchText="",sort=`$createdAt-desc`,li
   }
 };
 
-const createQueries = (currentUser: Models.Document,types=string[],searchText:string,sort:string,limit:number) => {
-  const queries = [
-   Query.or(queries:[ Query.equal("owner", [currentUser.$id]),
-    Query.contains("user", [currentUser.email]),])
-  ];
-  if(types.length>0) queries.push(Query.equal(attribute:"type",types))
-  if(searchText) queries.push(Query.contains("name", searchText))
-  if(limit) queries.push(Query.limit(limit))
-
-   if(sort){
-     const [sortBy,orderBy]=sort.split('-')
-
-    queries.push(orderBy==="asc"?Query.orderAsc(sortBy):Query.orderDesc(sortBy))
-   }
-
-  return queries;
-};
 export const renameFile = async ({
   fileId,
   name,
@@ -111,7 +141,7 @@ export const renameFile = async ({
       fileId,
       {
         name: newname,
-      }
+      },
     );
     revalidatePath(path);
     return parseStringify(updatedFile);
@@ -134,7 +164,7 @@ export const updateFileUsers = async ({
       fileId,
       {
         users: emails,
-      }
+      },
     );
     revalidatePath(path);
     return parseStringify(updatedFile);
@@ -154,7 +184,7 @@ export const deleteFile = async ({
     const deletedFile = await databases.deleteDocument(
       appwriteConfig.databaseID,
       appwriteConfig.filesCollectionID,
-      fileId
+      fileId,
     );
 
     if (deletedFile) {
@@ -167,23 +197,6 @@ export const deleteFile = async ({
   }
 };
 
-// export const renameFile=async({fileId,name,extension,path}:RenameFileProps)=>{
-//   const {databases}= await createAdminClient()
-
-//   try {
-//     const newName=`${name}.${extension}`
-//     const updatedFile=await databases.updateDocument(appwriteConfig.databaseID,appwriteConfig.filesCollectionID,fileId,{
-//       name:newName
-//     })
-//     revalidatePath(path)
-//     return parseStringify(updatedFile)
-
-//   } catch (error) {
-//     handleError(error,"Failed to rename file")
-
-//   }
-// }
-
 export const updateFile = async ({
   fileId,
   emails,
@@ -192,14 +205,13 @@ export const updateFile = async ({
   const { databases } = await createAdminClient();
 
   try {
-    
     const updatedFile = await databases.updateDocument(
       appwriteConfig.databaseID,
       appwriteConfig.filesCollectionID,
       fileId,
       {
         users: emails,
-      }
+      },
     );
     revalidatePath(path);
     return parseStringify(updatedFile);

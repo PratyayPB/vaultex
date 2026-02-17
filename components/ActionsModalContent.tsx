@@ -4,6 +4,8 @@ import { convertFileSize } from "@/lib/utils";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import Image from "next/image";
+import Thumbnail from "./Thumbnail";
+import { Models } from "node-appwrite";
 
 const ImageThumbnail = ({ file }: { file: Models.Document }) => {
   <div className="file-details-thumbnail">
@@ -41,7 +43,7 @@ interface Props {
   onRemove: (email: string) => void;
 }
 
-export const ShareInput = ({ file, onInputChange, onRemove }: { Props }) => {
+export const ShareInput = ({ file, onInputChange, onRemove }: Props) => {
   return (
     <>
       <ImageThumbnail file={file} />

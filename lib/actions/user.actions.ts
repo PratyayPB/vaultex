@@ -7,7 +7,7 @@ import { parseStringify } from "../utils";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { error } from "console";
-import { avatarPlaceholderURL } from "@/constants";
+import { avatarPlaceholderUrl } from "@/constants";
 import { create } from "domain";
 
 export const getUserByEmail = async (email: string) => {
@@ -55,7 +55,7 @@ export const createAccount = async ({
       {
         fullName: fullname,
         email,
-        avatar: avatarPlaceholderURL,
+        avatar: avatarPlaceholderUrl,
         accountId,
       },
     );
@@ -112,7 +112,16 @@ export const signinUser = async ({ email }: { email: string }) => {
 };
 
 export const getCurrentUser = async () => {
-  const { databases, account } = await createSessionClient();
+  //If no session, return null
+  const sessionClient = await createSessionClient();
+  if (!sessionClient) {
+    return null;
+  }
+
+  // if (!sessionClient) return null;
+
+  //getCUrrentUser
+  const { databases, account } = sessionClient;
   const result = await account.get();
   const user = await databases.listDocuments(
     appwriteConfig.databaseID,

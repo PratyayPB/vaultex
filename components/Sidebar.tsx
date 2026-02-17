@@ -2,7 +2,7 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { avatarPlaceholderURL, navitems } from "@/constants";
+import { navItems, avatarPlaceholderUrl } from "@/constants";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 interface SidebarProps {
@@ -34,7 +34,7 @@ const Sidebar = ({ fullName, email, avatar }: SidebarProps) => {
 
       <nav className="sidebar-nav">
         <ul className="flex flex-1 flex-col gap-6">
-          {navitems.map(({ url, name, icon }) => (
+          {navItems.map(({ url, name, icon }) => (
             <Link key={name} href={url} className="lg:w-full">
               <li
                 className={cn(
@@ -67,7 +67,7 @@ const Sidebar = ({ fullName, email, avatar }: SidebarProps) => {
       />
       <div className="sidebar-user-info">
         <Image
-          src={avatar || avatarPlaceholderURL}
+          src={avatar || avatarPlaceholderUrl}
           alt="avatar"
           width={44}
           height={44}

@@ -5,14 +5,21 @@ import Search from "./Search";
 import FileUploader from "./FileUploader";
 import { signOutUser } from "@/lib/actions/user.actions";
 
-const Header = ({ userId, acountId }: { userId: string; acountId: string }) => {
+const Header = ({
+  userId,
+  accountId,
+}: {
+  userId: string;
+  accountId: string;
+}) => {
   return (
     <header className="header flex justify-between">
       <Search />
       <div className="header-wrapper flex justify-between">
-        <FileUploader ownerId={userId} accountId={accountId} />
+        {/* <FileUploader ownerId={userId} accountId={accountId} /> */}
         <form
           action={async () => {
+            "use server";
             await signOutUser();
           }}
         >
