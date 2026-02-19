@@ -19,6 +19,7 @@ import { Separator } from "./ui/separator";
 import { navItems } from "@/constants";
 import FileUploader from "./FileUploader";
 import { signOutUser } from "@/lib/actions/user.actions";
+import Search from "./Search";
 
 interface MobileNavProps {
   $id: string;
@@ -38,14 +39,14 @@ const MobileNav = ({
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   return (
-    <header className="mobile-header">
+    <header className="mobile-header lg:hidden flex justify-between items-center py-5 px-6">
       <Image
-        src="/assets/icons/logo-full-brand.svg"
+        src="/assets/icons/logo-brand.svg"
         alt="logo"
-        width={120}
+        width={52}
         height={52}
-        className="h-auto"
       />
+      <Search />
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger>
           <Image
@@ -59,7 +60,7 @@ const MobileNav = ({
         <SheetContent className="shad-sheet h-screen px-3">
           <SheetHeader>
             <SheetTitle>
-              <div className="header-user">
+              <div className="header-user flex items-center gap-15 py-2">
                 <Image
                   src={avatar}
                   alt="avatar"
@@ -72,7 +73,7 @@ const MobileNav = ({
                   <p className="caption">{email}</p>
                 </div>
               </div>
-              <Separator className="mb-4 bg-light-200" />
+              <Separator className="my-4 bg-light-200" />
             </SheetTitle>
             <nav className="mobile-nav">
               <ul className="mobile-nav-list">
@@ -80,7 +81,7 @@ const MobileNav = ({
                   <Link key={name} href={url} className="lg:w-full">
                     <li
                       className={cn(
-                        "mobile-nav-item",
+                        "mobile-nav-item flex items-center gap-4 py-3",
                         pathname === url && "shad-active",
                       )}
                     >
@@ -90,7 +91,7 @@ const MobileNav = ({
                         width={24}
                         height={24}
                         className={cn(
-                          "nav-icon",
+                          "nav-icon invert opacity-35 filter ",
                           pathname === url && "nav-icon-active",
                         )}
                       />

@@ -35,6 +35,9 @@ export const uploadFile = async ({
       inputFile,
     );
 
+    // console.log("File uploaded:", bucketFile);
+    // console.log(constructFileUrl(bucketFile.$id));
+
     const fileDocument = {
       type: getFileType(bucketFile.name).type,
       name: bucketFile.name,
@@ -104,7 +107,7 @@ export const getFiles = async ({
   sort = `$createdAt-desc`,
   limit,
 }: GetFilesProps) => {
-  const databases = await createAdminClient();
+  const { databases } = await createAdminClient();
   try {
     const currentUser = await getCurrentUser();
     if (!currentUser) {

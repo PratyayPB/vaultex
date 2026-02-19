@@ -13,12 +13,14 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
     redirect("/signin");
   }
   return (
-    <main className="flex h-screen bg-brand-100">
+    <main className="flex h-screen">
       <Sidebar {...currentUser} />
-      <section className="flex h-full flex-1 flex-col">
-        <MobileNav {...currentUser} />{" "}
+      <section className="flex  flex-1 flex-col">
+        <MobileNav {...currentUser} />
         <Header userId={currentUser.$id} accountId={currentUser.accountId} />
-        <div className="main-content bg-white">{children}</div>
+        <div className="main-content bg-gray-100 rounded-t-2xl lg:mx-4  mx-2 ">
+          {children}
+        </div>
       </section>
       <Toaster />
     </main>

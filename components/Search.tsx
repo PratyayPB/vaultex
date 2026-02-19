@@ -50,17 +50,18 @@ const Search = () => {
   };
   return (
     <div className="search ">
-      <div className="search-input-wrapper">
+      <div className="search-input-wrapper relative ">
         <Image
           src="/assets/icons/search.svg"
           alt="search"
           width={24}
           height={24}
+          className="absolute mt-1 ml-2"
         />
         <Input
           value={query}
           placeholder="Search..."
-          className="search-input"
+          className="search-input pl-10 outline-none border-none"
           onChange={(e) => {
             setquery(e.target.value);
           }}

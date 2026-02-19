@@ -12,11 +12,12 @@ interface ThumbnailProps {
 const Thumbnail = ({
   type,
   extension,
-  url = "",
+  url,
   imageClassName,
   className,
 }: ThumbnailProps) => {
   const isImage = type === "image" && extension !== "svg";
+  console.log("Thumbnail", url);
   //figure:HTML element typically used for thumbnails, images, diagrams, etc. It can contain an img element and a figcaption element for captions.
   return (
     <figure className={cn("thumbnail", className)}>

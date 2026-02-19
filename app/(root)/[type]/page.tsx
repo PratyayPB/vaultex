@@ -5,6 +5,7 @@ import { getFiles } from "@/lib/actions/file.actions";
 import Card from "@/components/Card";
 import { getFileTypesParams } from "@/lib/utils";
 import { Models } from "node-appwrite";
+import { file } from "zod";
 
 const Page = async ({ searchParams, params }: SearchParamProps) => {
   const type = ((await params)?.type as string) || "";
@@ -15,12 +16,12 @@ const Page = async ({ searchParams, params }: SearchParamProps) => {
   const files = await getFiles({ types, searchText, sort });
 
   return (
-    <div className="page-container">
+    <div className="page-container p-8">
       <section className="w-full">
         <h1 className="h1 capitalize">{type}</h1>
-        <div className="total-size-section">
-          <p className="body-1">
-            Total: <span className="h-5"></span>
+        <div className="total-size-section flex justify-between  items-center">
+          <p className="body-1 text-left">
+            Total: <span className="h-5">{files.total}</span>
           </p>
           <div className="sort-container">
             <p className="body-1 hidden sm:block text-light-200">
@@ -33,8 +34,7 @@ const Page = async ({ searchParams, params }: SearchParamProps) => {
 
       {/* Render Files */}
 
-      {/* {files.total > 0 ? ( */}
-      {0 > 0 ? (
+      {files.total > 0 ? (
         <section className="file-list">
           {files.documents.map((file: Models.Document) => (
             <h1 className="h1" key={file.$id}>
