@@ -14,7 +14,7 @@ interface SidebarProps {
 const Sidebar = ({ fullName, email, avatar }: SidebarProps) => {
   const pathname = usePathname();
   return (
-    <aside className="sidebar mt-8 px-6 justify-between pb-30 lg:pb-2 hidden lg:flex flex-col  items-center ">
+    <aside className="sidebar my-8 px-6 justify-between pb-30 lg:pb-2 hidden lg:flex flex-col  items-center ">
       <Link href="/">
         <Image
           src="/assets/icons/logo-full-brand.svg"

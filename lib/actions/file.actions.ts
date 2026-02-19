@@ -2,7 +2,7 @@
 import { InputFile } from "node-appwrite/file";
 import { createAdminClient } from "../appwrite";
 import { appwriteConfig } from "../appwrite/config";
-import { ID, Models, Query } from "node-appwrite";
+import { ID, Models, Query, TablesDB } from "node-appwrite";
 import { getFileType, parseStringify, constructFileUrl } from "../utils";
 
 // import { url } from "inspector";
@@ -16,6 +16,7 @@ import {
 } from "@/types";
 import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "./user.actions";
+import { size } from "zod";
 export const handleError = async (error: unknown, message: string) => {
   console.log(error, message);
   throw error;
@@ -29,14 +30,12 @@ export const uploadFile = async ({
   const { storage, databases } = await createAdminClient();
   try {
     const inputFile = InputFile.fromBuffer(file, file.name);
+
     const bucketFile = await storage.createFile(
       appwriteConfig.bucketID,
       ID.unique(),
       inputFile,
     );
-
-    // console.log("File uploaded:", bucketFile);
-    // console.log(constructFileUrl(bucketFile.$id));
 
     const fileDocument = {
       type: getFileType(bucketFile.name).type,
@@ -47,6 +46,7 @@ export const uploadFile = async ({
       accountId,
       users: [],
       bucketFileId: bucketFile.$id,
+      size: inputFile.size,
     };
 
     const newFile = await databases
@@ -74,11 +74,6 @@ const createQueries = (
   sort: string,
   limit: number,
 ) => {
-  // const queries = [
-  //  Query.or([queries:[ Query.equal("owner", [currentUser.$id]),
-  //   Query.contains("user", [currentUser.email]),])
-  // ];
-
   const queries = [
     Query.or([
       Query.equal("owner", [currentUser.$id]),
@@ -114,12 +109,20 @@ export const getFiles = async ({
       return null;
       // throw new Error("User not found");
     }
+    // const tablesDB = new TablesDB(currentUser.$id);
+
+    // await tablesDB.listRows({
+    //   databaseId: appwriteConfig.databaseID,
+    //   tableId: appwriteConfig.filesCollectionID,
+    //   queries: [Query.equal("owner", [currentUser.$id])],
+    // });
 
     const queries = createQueries(currentUser, types, searchText, sort, limit);
+
     const files = await databases.listDocuments(
       appwriteConfig.databaseID,
       appwriteConfig.filesCollectionID,
-      queries,
+      [...queries, Query.select(["*", "owner.fullName"])],
     );
 
     return parseStringify(files);

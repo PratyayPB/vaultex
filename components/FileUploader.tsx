@@ -32,17 +32,8 @@ const FileUploader = ({ ownerId, accountId, className }: FileUploaderProps) => {
       const uploadPromises = acceptedFiles.map(async (file) => {
         if (file.size > MAX_FILE_SIZE) {
           setfiles((prevFiles) => {
-            prevFiles.filter((f) => f.name !== file.name);
+            return prevFiles.filter((f) => f.name !== file.name);
           });
-          // return toast({
-          //   description: (
-          //     <p className="body-2 text-white">
-          //       <span className="font-semibold">{file.name}</span> is too large.
-          //       Max file size is 50MB.
-          //     </p>
-          //   ),
-          //   className: "error-toast",
-          // });
 
           return toast.error(
             `<span className="font-semibold">${file.name} </span> is too large. Max file size is 50MB.`,
@@ -64,7 +55,7 @@ const FileUploader = ({ ownerId, accountId, className }: FileUploaderProps) => {
           (uploadedFile) => {
             if (uploadedFile) {
               setfiles((prevFiles) => {
-                prevFiles.filter((f) => f.name !== file.name);
+                return prevFiles.filter((f) => f.name !== file.name);
               });
             }
           },
@@ -105,7 +96,7 @@ const FileUploader = ({ ownerId, accountId, className }: FileUploaderProps) => {
         transition={Bounce}
       />
 
-      <div {...getRootProps()} className="cursor-pointer">
+      <div {...getRootProps()} className="cursor-pointer ">
         <input {...getInputProps()} />
         <Button type="button" className={cn("uploader-button", className)}>
           <Image
@@ -117,7 +108,7 @@ const FileUploader = ({ ownerId, accountId, className }: FileUploaderProps) => {
           <p>Upload</p>
         </Button>
         {files.length > 0 && (
-          <ul className="uploader-preview-list">
+          <ul className="uploader-preview-list ">
             <h4 className="text-light-100 h4">Uploading</h4>
             {files.map((file, index) => {
               const { type, extenstion } = getFileType(file.name);

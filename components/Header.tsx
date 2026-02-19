@@ -13,13 +13,13 @@ const Header = ({
   accountId: string;
 }) => {
   return (
-    <header className="header lg:flex justify-between py-5 px-10 hidden ">
+    <header className="header lg:flex justify-between gap-20 py-5 px-10 hidden ">
       <Search />
-      <div className="header-wrapper flex justify-between  gap-8">
+      <div className="header-wrapper flex justify-between  gap-8 ">
         <FileUploader
           ownerId={userId}
           accountId={accountId}
-          className="transition-all duration-300 hover:scale-125 cursor-pointer"
+          className="transition-all duration-300 hover:scale-125 cursor-pointer items self-end"
         />
         <form
           action={async () => {
