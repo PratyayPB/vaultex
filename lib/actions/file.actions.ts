@@ -16,7 +16,8 @@ import {
 } from "@/types";
 import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "./user.actions";
-import { size } from "zod";
+
+import { Client } from "node-appwrite";
 export const handleError = async (error: unknown, message: string) => {
   console.log(error, message);
   throw error;
@@ -224,4 +225,19 @@ export const updateFile = async ({
   } catch (error) {
     handleError(error, "Failed to rename file");
   }
+};
+
+export const downloadFile = async (fileId: string) => {
+  const client = new Client();
+
+  client
+    .setEndpoint(`${process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT_URL}`) // Your API Endpoint
+    .setProject(`${process.env.NEXT_PUBLIC_APPWRITE_PROJECT}`); // Your project ID
+
+  const downloadUrl = storage.getFileDownload(
+    process.env.NEXT_PUBLIC_APPWRITE_BUCKET!,
+    fileId,
+  );
+
+  window.location.href = downloadUrl;
 };

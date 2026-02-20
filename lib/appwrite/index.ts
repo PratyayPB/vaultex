@@ -3,6 +3,18 @@
 import { Account, Client, Databases, Storage, Avatars } from "node-appwrite";
 import { appwriteConfig } from "./config";
 import { cookies } from "next/headers";
+
+export const createStorageClient = async () => {
+  const client = new Client()
+    .setEndpoint(appwriteConfig.endpointURL)
+    .setProject(appwriteConfig.projectID);
+
+  return {
+    get storage() {
+      return new Storage(client);
+    },
+  };
+};
 export const createSessionClient = async () => {
   const client = new Client()
     .setEndpoint(appwriteConfig.endpointURL)

@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import {
@@ -24,18 +23,21 @@ import {
 } from "@/components/ui/dialog";
 import { Models } from "node-appwrite";
 import { useState } from "react";
-import { constructDownloadUrl } from "@/lib/utils";
+import { constructDownloadUrl, sanitizeFileName } from "@/lib/utils";
 import Link from "next/link";
 import { Input } from "./ui/input";
 import {
   renameFile,
   updateFileUsers,
   deleteFile,
+  downloadFile,
 } from "@/lib/actions/file.actions";
 import { usePathname } from "next/navigation";
 import { FileDetails, ShareInput } from "./ActionsModalContent";
 import { ActionType } from "@/types";
 import { actionsDropdownItems } from "@/constants";
+import { toast } from "react-toastify";
+import { storage } from "@/lib/appwrite/client";
 
 const ActionDropdown = ({ file }: { file: Models.Document }) => {
   const [isModalOpen, setisModalOpen] = useState(false);
@@ -45,12 +47,30 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
   const [isLoading, setisLoading] = useState(false);
   const [emails, setemails] = useState<string[]>([]);
   const path = usePathname();
+
   const closeAllModals = () => {
     setisModalOpen(false);
     setisDropdownOpen(false);
     setaction(null);
     setname(file.name);
     //setEmails([])
+  };
+  const downloadFile = async (fileId: string, fileName: string) => {
+    const arrayBuffer = storage.getFileDownload(
+      process.env.NEXT_PUBLIC_APPWRITE_BUCKET!,
+      fileId,
+    );
+    const blob = new Blob([arrayBuffer]);
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
   };
 
   const handleAction = async () => {
@@ -59,12 +79,33 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
     let success = false;
     const actions = {
       rename: () =>
-        renameFile({ fileId: file.$id, name, extension: file.extension, path }),
+        renameFile({
+          fileId: file.$id,
+          name,
+          extension: file.extension,
+          path,
+        })
+          .then(() => {
+            toast.success("File renamed successfully");
+          })
+          .finally(() => {
+            closeAllModals();
+          }),
       share: () => {
         updateFileUsers({ fileId: file.$id, emails, path });
       },
       delete: () => {
-        deleteFile({ fileId: file.$id, path, bucketFileId: file.bucketFileId });
+        deleteFile({
+          fileId: file.$id,
+          path,
+          bucketFileId: file.bucketFileId,
+        })
+          .then(() => {
+            toast.success("File deleted successfully");
+          })
+          .finally(() => {
+            closeAllModals();
+          });
       },
     };
     success = await actions[action.value as keyof typeof actions]();
@@ -164,6 +205,10 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
                 className="shad-dropdown=item"
                 onClick={() => {
                   setaction(actionItem);
+                  if (actionItem.value === "download") {
+                    downloadFile(file.$id, file.name);
+                    return;
+                  }
 
                   if (
                     ["rename", "share", "delete", "details"].includes(
@@ -175,18 +220,12 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
                 }}
               >
                 {actionItem.value === "download" ? (
-                  <Link
-                    href={constructDownloadUrl(file.bucketFileId)}
-                    download={file.name}
-                    className="flex items-center gap-2"
-                  >
-                    <Image
-                      src={actionItem.icon}
-                      width={30}
-                      height={30}
-                      alt={actionItem.label}
-                    />
-                  </Link>
+                  <Image
+                    src={actionItem.icon}
+                    width={30}
+                    height={30}
+                    alt={actionItem.label}
+                  />
                 ) : (
                   <div className="flex items-center gap-2">
                     <Image

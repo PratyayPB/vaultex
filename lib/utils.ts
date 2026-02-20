@@ -180,7 +180,14 @@ export const constructFileUrl = (bucketFileId: string) => {
 };
 
 export const constructDownloadUrl = (bucketFileId: string) => {
-  return `${process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT}/storage/buckets/${process.env.NEXT_PUBLIC_APPWRITE_BUCKET}/files/${bucketFileId}/download?project=${process.env.NEXT_PUBLIC_APPWRITE_PROJECT}`;
+  return `${process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT_URL}/storage/buckets/${process.env.NEXT_PUBLIC_APPWRITE_BUCKET}/files/${bucketFileId}/download?project=${process.env.NEXT_PUBLIC_APPWRITE_PROJECT}`;
+};
+export const sanitizeFileName = (name: string, extension: string) => {
+  extension = extension.toLowerCase();
+  if (name.endsWith(`.${extension}.${extension}`)) {
+    return name.replace(`.${extension}`, "");
+  }
+  return name;
 };
 
 // DASHBOARD UTILS

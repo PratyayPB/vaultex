@@ -1,6 +1,6 @@
 import React from "react";
 import FormattedDateTime from "./FormattedDateTime";
-import { convertFileSize } from "@/lib/utils";
+import { convertFileSize, formatDateTime } from "@/lib/utils";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import Image from "next/image";
@@ -8,19 +8,26 @@ import Thumbnail from "./Thumbnail";
 import { Models } from "node-appwrite";
 
 const ImageThumbnail = ({ file }: { file: Models.Document }) => {
-  <div className="file-details-thumbnail">
-    <Thumbnail type={file.type} extension={file.extension} url={file.url} />
-    <div className="flex flex-col ">
-      <p className="subtitle-2 mb-1">{file.name}</p>
-      <FormattedDateTime date={file.$createdAt} className="caption" />
+  return (
+    <div className="file-details-thumbnail">
+      <Thumbnail type={file.type} extension={file.extension} url={file.url} />
+      <div className="flex flex-col ">
+        <p className="subtitle-2 mb-1">{file.name}</p>
+        <FormattedDateTime
+          date={file.$createdAt}
+          className="caption text-dark-100"
+        />
+      </div>
     </div>
-  </div>;
+  );
 };
 const DetailRow = ({ value, label }: { value: string; label: string }) => {
-  <div className="flex">
-    <p className="file-details-label text-left">{label}</p>
-    <p className="file-details-value text-left">{value}</p>
-  </div>;
+  return (
+    <div className="grid grid-cols-2 gap-4 ">
+      <p className="file-details-label text-left">{label}</p>
+      <p className="file-details-value text-left">{value}</p>
+    </div>
+  );
 };
 
 export const FileDetails = ({ file }: { file: Models.Document }) => {
