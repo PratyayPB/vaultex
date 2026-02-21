@@ -18,8 +18,8 @@ const Dashboard = async () => {
 
   return (
     <div
-      className="dashboard-container grid grid-cols-2 gap-4 overflow-y-auto  
-    max-h-[90vh] h-full mx-5 my-5  [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+      className="dashboard-container flex flex-col gap-20 lg:grid grid-cols-2 gap-4 overflow-y-auto  
+    lg:max-h-[90vh] h-full mx-5 my-5  [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
     >
       <section className="flex flex-col gap-4 w-full h-full">
         <Chart used={totalSpace.used} />
@@ -32,19 +32,33 @@ const Dashboard = async () => {
               className="dashboard-summary-card"
             >
               <div className="space-y-4 ">
-                <div className="relative ">
+                <div className="relative w-fit max-w-fit mx-auto">
                   <Image
                     src={summary.icon}
                     alt="uploaded-image"
                     width={250}
                     height={800}
-                    className="summary-type-icon"
+                    className="summary-type-icon hidden lg:block "
                   />
-                  <h4 className="summary-type-size absolute top-11 left-42 font-semibold">
+
+                  {/* Mobile View  */}
+                  <Image
+                    src={summary.icon}
+                    alt="uploaded-image"
+                    width={200}
+                    height={500}
+                    className="summary-type-icon lg:hidden"
+                  />
+
+                  <h4 className="summary-type-size absolute top-11 left-42 font-semibold hidden lg:block">
+                    {convertFileSize(summary.size) || 0}
+                  </h4>
+                  {/* Mobile View  */}
+                  <h4 className="summary-type-size absolute top-11 left-24 text-xl font-semibold lg:hidden">
                     {convertFileSize(summary.size) || 0}
                   </h4>
 
-                  <div className="absolute bg-white h-20 w-58.5 left-4">
+                  <div className="absolute bg-white h-20 w-58.5 left-4 hidden lg:block">
                     <h5 className="summary-type-title absolute bottom-22 left-20 text-right font-bold text-xl ">
                       {summary.title}
                     </h5>
@@ -57,6 +71,12 @@ const Dashboard = async () => {
                       date={summary.latestDate}
                       className="text-center absolute top-10 left-24"
                     />
+                  </div>
+                  {/* Mobile View  */}
+                  <div className="absolute bg-white h-20 w-46.75 left-[13px] lg:hidden">
+                    <h5 className="summary-type-title absolute bottom-6 left-6 text-right font-bold text-xl lg:hidden ">
+                      {summary.title}
+                    </h5>
                   </div>
                 </div>
               </div>
