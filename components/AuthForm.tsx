@@ -17,6 +17,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { createAccount, signinUser } from "@/lib/actions/user.actions";
 import OTPModal from "./OTPModal";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
+import { Bounce, ToastContainer } from "react-toastify";
 // import OtpModal from "@/components/OTPModal";
 
 type FormType = "sign-in" | "sign-up";
@@ -45,6 +48,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
     },
   });
 
+  const router = useRouter();
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true);
     setErrorMessage("");
@@ -58,6 +62,17 @@ const AuthForm = ({ type }: { type: FormType }) => {
             })
           : await signinUser({ email: values.email });
 
+      if (!user.accountId) {
+        toast.error(
+          "Credentials doesn't match our records. Redirecting to signup page..",
+        );
+        setTimeout(() => {
+          router.push("/signup");
+        }, 5000);
+
+        return;
+      }
+
       setAccountId(user.accountId);
     } catch {
       setErrorMessage("Failed to create account. Please try again.");
@@ -68,9 +83,25 @@ const AuthForm = ({ type }: { type: FormType }) => {
 
   return (
     <>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Bounce}
+      />
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="auth-form">
-          <h1 className="form-title">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="auth-form flex flex-col gap-5"
+        >
+          <h1 className="form-title text-4xl font-bold mb-10">
             {type === "sign-in" ? "Sign In" : "Sign Up"}
           </h1>
           {type === "sign-up" && (
@@ -79,8 +110,10 @@ const AuthForm = ({ type }: { type: FormType }) => {
               name="fullName"
               render={({ field }) => (
                 <FormItem>
-                  <div className="shad-form-item">
-                    <FormLabel className="shad-form-label">Full Name</FormLabel>
+                  <div className="shad-form-item ">
+                    <FormLabel className="shad-form-label py-2">
+                      Full Name
+                    </FormLabel>
 
                     <FormControl>
                       <Input
@@ -103,7 +136,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
             render={({ field }) => (
               <FormItem>
                 <div className="shad-form-item">
-                  <FormLabel className="shad-form-label">Email</FormLabel>
+                  <FormLabel className="shad-form-label py-2">Email</FormLabel>
 
                   <FormControl>
                     <Input
@@ -121,7 +154,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
 
           <Button
             type="submit"
-            className="form-submit-button"
+            className="form-submit-button cursor-pointer"
             disabled={isLoading}
           >
             {type === "sign-in" ? "Sign In" : "Sign Up"}

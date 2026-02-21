@@ -59,10 +59,9 @@ const OTPModal = ({ email, accountId, onClose }: OTPModalProps) => {
           if (!open) onClose();
         }}
       >
-        <AlertDialogContent className="shad-alert-dialog">
+        <AlertDialogContent className="shad-alert-dialog flex flex-col gap-4 ">
           <AlertDialogHeader className="relative flex justify-center">
-            <AlertDialogTitle className="h2 text-center">
-              Enter your OTP
+            <AlertDialogTitle className="h2 text-center flex justify-start gap-30">
               <Image
                 src="/assets/icons/close-dark.svg"
                 alt="close"
@@ -71,13 +70,15 @@ const OTPModal = ({ email, accountId, onClose }: OTPModalProps) => {
                 onClick={() => setIsOpen(false)}
                 className="otp-close-button"
               />
+              Enter your OTP
             </AlertDialogTitle>
             <AlertDialogDescription className="subtitle-2 text-center text-light-100">
-              We&apos;ve sent a code to <span>{email}</span>
+              We&apos;ve sent a code to{" "}
+              <span className="font-bold text-dark-100 text-md">{email}</span>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <InputOTP maxLength={6} value={password} onChange={setPassword}>
-            <InputOTPGroup className="shad-otp">
+            <InputOTPGroup className="shad-otp mx-auto">
               <InputOTPSlot index={0} className="shad-otp-slot" />
               <InputOTPSlot index={1} className="shad-otp-slot" />
               <InputOTPSlot index={2} className="shad-otp-slot" />
@@ -86,11 +87,11 @@ const OTPModal = ({ email, accountId, onClose }: OTPModalProps) => {
               <InputOTPSlot index={5} className="shad-otp-slot" />
             </InputOTPGroup>
           </InputOTP>
-          <AlertDialogFooter>
-            <div className="flex w-full flex-col gap-4">
+          <AlertDialogFooter className="px-4">
+            <div className="flex w-full flex-col gap-2">
               <AlertDialogAction
                 onClick={handleSubmit}
-                className="shadcn-submit-btn h-12"
+                className="shadcn-submit-btn h-12 cursor-pointer"
                 type="button"
               >
                 Submit
@@ -104,26 +105,27 @@ const OTPModal = ({ email, accountId, onClose }: OTPModalProps) => {
                   />
                 )}
               </AlertDialogAction>
-              <div className="subtitle-2 mt-2 text-center text-light-100">
+              <div className="subtitle-2 mb-1 text-center text-light-100">
                 Didn&apos;t receive the code?{" "}
                 <Button
                   onClick={handleResendOTP}
                   type="button"
                   variant="link"
-                  className="pl-1 text-brand"
+                  className="pl-1 text-brand cursor-pointer"
                 >
                   Resend
                 </Button>
               </div>
+              <AlertDialogCancel
+                onClick={() => {
+                  setIsOpen(false);
+                  onClose();
+                }}
+                className="cursor-pointer"
+              >
+                Cancel
+              </AlertDialogCancel>
             </div>
-            <AlertDialogCancel
-              onClick={() => {
-                setIsOpen(false);
-                onClose();
-              }}
-            >
-              Cancel
-            </AlertDialogCancel>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

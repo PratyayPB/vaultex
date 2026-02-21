@@ -6,9 +6,8 @@ import { Query, ID } from "node-appwrite";
 import { parseStringify } from "../utils";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { error } from "console";
+
 import { avatarPlaceholderUrl } from "@/constants";
-import { create } from "domain";
 
 export const getUserByEmail = async (email: string) => {
   const { databases } = await createAdminClient();
@@ -101,6 +100,9 @@ export const signoutUser = async () => {
 export const signinUser = async ({ email }: { email: string }) => {
   try {
     const existingUser = await getUserByEmail(email);
+    if (!existingUser) {
+      return parseStringify({ accountId: null, error: "User not found" });
+    }
     if (existingUser) {
       await sendEmailOTP({ email });
       return parseStringify({ accountId: existingUser.accountId });

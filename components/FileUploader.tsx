@@ -76,7 +76,7 @@ const FileUploader = ({ ownerId, accountId, className }: FileUploaderProps) => {
   ) => {
     e.stopPropagation();
     setfiles((prevFiles) => {
-      prevFiles.filter((f) => f.name != fileName);
+      return prevFiles.filter((f) => f.name != fileName);
     });
   };
 
@@ -96,7 +96,7 @@ const FileUploader = ({ ownerId, accountId, className }: FileUploaderProps) => {
         transition={Bounce}
       />
 
-      <div {...getRootProps()} className="cursor-pointer ">
+      <div {...getRootProps()} className="cursor-pointer relative">
         <input {...getInputProps()} />
         <Button type="button" className={cn("uploader-button", className)}>
           <Image
@@ -107,44 +107,60 @@ const FileUploader = ({ ownerId, accountId, className }: FileUploaderProps) => {
           />{" "}
           <p>Upload</p>
         </Button>
-        {files.length > 0 && (
-          <ul className="uploader-preview-list ">
-            <h4 className="text-light-100 h4">Uploading</h4>
-            {files.map((file, index) => {
-              const { type, extenstion } = getFileType(file.name);
-              return (
-                <li
-                  key={`${file.name}-${index}`}
-                  className="uploader-preview-item"
-                >
-                  <div className="flex items-center gap-3">
-                    <Thumbnail
-                      type={type}
-                      extension={extenstion}
-                      url={convertFileToUrl(file)}
-                    />
-                    <div className="preview-item-name">
-                      {file.name}
-                      <Image
-                        src="/assets/icons/file-loader.gif"
-                        width={80}
-                        height={26}
-                        alt="Loader"
+        {files ? (
+          files.length > 0 && (
+            <ul className="uploader-preview-list ">
+              <h4 className="text-light-100 h4">Uploading</h4>
+              {files.map((file, index) => {
+                const { type, extenstion } = getFileType(file.name);
+                return (
+                  <li
+                    key={`${file.name}-${index}`}
+                    className="uploader-preview-item"
+                  >
+                    <div className="flex items-center gap-3">
+                      <Thumbnail
+                        type={type}
+                        extension={extenstion}
+                        url={convertFileToUrl(file)}
                       />
+                      <div className="preview-item-name">
+                        {file.name}
+                        <Image
+                          src="/assets/icons/file-loader.gif"
+                          width={80}
+                          height={26}
+                          alt="Loader"
+                        />
+                      </div>
                     </div>
-                  </div>
 
-                  <Image
-                    src="/assets/icons/remove.svg"
-                    width={24}
-                    height={24}
-                    alt="Remove"
-                    onClick={(e) => handleRemoveFile(e, file.name)}
-                  />
-                </li>
-              );
-            })}
-          </ul>
+                    <Image
+                      src="/assets/icons/remove.svg"
+                      width={24}
+                      height={24}
+                      alt="Remove"
+                      onClick={(e) => handleRemoveFile(e, file.name)}
+                    />
+                  </li>
+                );
+              })}
+            </ul>
+          )
+        ) : (
+          <div className="uploader-empty  py-6 text-light-100 absolute left-0 top-full mt-2 max-w-400 bg-red-100 px-4  rounded-2xl shadow-lg z-50">
+            <Image
+              src="/assets/icons/upload.svg"
+              width={40}
+              height={40}
+              alt="Upload"
+              className="opacity-60"
+            />
+            <p className="mt-2 text-sm">No files selected</p>
+            <p className="text-xs opacity-70">
+              Drag & drop or browse to upload
+            </p>
+          </div>
         )}
       </div>
     </>

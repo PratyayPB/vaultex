@@ -47,6 +47,7 @@ const MobileNav = ({
         height={52}
       />
       <Search />
+      <FileUploader ownerId={ownerId} accountId={accountId} />
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger>
           <Image
