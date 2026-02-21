@@ -305,3 +305,12 @@ Just toggle:
 or via JS:
 
 document.documentElement.classList.add("dark") */
+/* Hide scrollbar but keep scroll */
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hidden {
+  -ms-overflow-style: none; /* IE & Edge */
+  scrollbar-width: none; /* Firefox */
+}

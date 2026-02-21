@@ -10,15 +10,18 @@ import ActionDropdown from "@/components/ActionDropdown";
 import { Models } from "node-appwrite";
 const Dashboard = async () => {
   const [files, totalSpace] = await Promise.all([
-    getFiles({ types: [], limit: 9 }),
+    getFiles({ types: [], limit: 10 }),
     getTotalSpaceUsed(),
   ]);
 
   const usageSummary = getUsageSummary(totalSpace);
 
   return (
-    <div className="dashboard-container grid grid-cols-2 gap-4 overflow-y-scroll max-h-[90vh] h-full">
-      <section>
+    <div
+      className="dashboard-container grid grid-cols-2 gap-4 overflow-y-auto  
+    max-h-[90vh] h-full mx-5 my-5  [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+    >
+      <section className="flex flex-col gap-4 w-full h-full">
         <Chart used={totalSpace.used} />
 
         <ul className="dashboard-summary-list grid grid-cols-2 gap-x-4 gap-y-20">
@@ -62,7 +65,7 @@ const Dashboard = async () => {
         </ul>
       </section>
       {/*Recent Files */}
-      <section className="dashboard-recent-files w-full h-fit px-4 py-4">
+      <section className="dashboard-recent-files w-full h-full px-4 py-4 bg-white rounded-2xl ">
         <h2 className="h3 xl:h2 text-light-100">Recent files uploaded</h2>
         {files.documents.length > 0 ? (
           <ul className="mt-5 flex flex-col gap-5 w-full">
