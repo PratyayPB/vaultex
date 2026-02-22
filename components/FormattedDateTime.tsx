@@ -5,7 +5,7 @@ const FormattedDateTime = ({
   date,
   className,
 }: {
-  date: string;
+  date: string | number;
   className?: string;
 }) => {
   return (
