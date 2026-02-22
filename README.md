@@ -1,36 +1,162 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Vaultex
 
-## Getting Started
+A cloud-based file management application similar to Google Drive.  
+Vaultex allows users to upload, manage, and securely share files with fine-grained email-based access control.
 
-First, run the development server:
+🌐 **Live Deployment**: https://vaultex-phi.vercel.app/
+
+---
+
+## 🚀 Features
+
+### 📁 File Management
+- Upload and host files (images, videos, documents, executables, and other popular formats)
+- Update file details
+- Delete files
+- View files directly within the app
+- Display file owner on each file card
+
+### 🔐 Secure Sharing
+- Email-based access control
+- File owner can add specific emails to grant access
+- Only authorized users with approved emails can access shared files
+
+### 📊 Personalized Dashboard
+- Total storage usage tracking
+- Visual storage analytics (Images, Videos, Documents, Others)
+- Charts powered by Recharts
+- Recently uploaded / recently updated files overview
+
+### 🧠 Smart File Organization
+- Sort files by:
+  - Alphabetical order
+  - File name
+  - File size
+  - Date created
+- Dedicated pages for:
+  - Images
+  - Videos
+  - Documents
+  - Other file types
+
+### ✉️ Authentication
+- OTP-based email authentication
+- Secure login using Appwrite Auth
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+- Next.js
+- TypeScript
+- React
+- Tailwind CSS
+- shadcn/ui
+- Recharts (for storage analytics)
+
+### Backend (BaaS)
+- Appwrite
+  - Authentication
+  - Database
+  - Storage
+  - Access Control
+
+### Deployment
+- Vercel
+
+---
+
+## 📦 Installation
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/PratyayPB/vaultex.git
+cd vaultex
+```
+
+### 2. Install dependencies
+```bash
+npm install
+```
+
+---
+
+## ⚙️ Environment Variables
+
+Create a `.env.local` file in the root directory:
+
+```env
+NEXT_PUBLIC_APPWRITE_ENDPOINT=
+NEXT_PUBLIC_APPWRITE_PROJECT_ID=
+NEXT_PUBLIC_APPWRITE_DATABASE_ID=
+NEXT_PUBLIC_APPWRITE_FILES_COLLECTION_ID=
+NEXT_PUBLIC_APPWRITE_USERS_COLLECTION_ID=
+NEXT_PUBLIC_APPWRITE_BUCKET_ID=
+```
+
+⚠️ Do not commit your environment variables.
+
+---
+
+## ▶️ Running the Project
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+App will run at:
+```
+http://localhost:3000
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🧠 How It Works
 
-## Learn More
+### 1️⃣ Authentication
+- User enters email
+- OTP is sent via Appwrite
+- User verifies OTP to authenticate
 
-To learn more about Next.js, take a look at the following resources:
+### 2️⃣ File Upload
+- File is uploaded to Appwrite Storage
+- Metadata is stored in Appwrite Database
+- Owner information is attached to file document
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 3️⃣ Sharing System
+- File owner adds authorized emails
+- Access control rules are updated in Appwrite
+- Only specified users can access shared files
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 4️⃣ Dashboard Analytics
+- Fetch all user files
+- Categorize by media type
+- Calculate storage usage
+- Display dynamic charts using Recharts
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📊 Key Highlights
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Fine-grained access control using Appwrite permissions
+- Real-time storage analytics
+- Clean and responsive UI
+- Modular component structure
+- Strong TypeScript usage
+- Scalable architecture (BaaS-driven backend)
+
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+---
+
+## 👤 Author
+
+**Pratyay**  
+Computer Science Engineering Student  
+GitHub: https://github.com/PratyayPB
