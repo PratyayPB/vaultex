@@ -10,7 +10,7 @@ const Card = ({ file }: { file: FileDocument }) => {
   return (
     <div className="bg-white p-2 m-4 w-min rounded-2xl ">
       <Link href={file.url} target="_blank" className="file-card ">
-        <div className="flex justify-between px-2 w-40 h-25 md:w-55 md:h-35">
+        <div className="flex justify-between px-0 md:px-2 w-25 h-20 md:w-55 md:h-35">
           <Thumbnail
             type={file.type}
             extension={file.extension}
@@ -22,8 +22,8 @@ const Card = ({ file }: { file: FileDocument }) => {
             type={file.type}
             extension={file.extension}
             url={file.url}
-            className="!size-25 bg-gray-100 flex items-center justify-center rounded-full md:hidden"
-            imageClassName="!size-25"
+            className="!size-18 bg-gray-100 flex items-center justify-center rounded-full md:hidden"
+            imageClassName="!size-18"
           />
           <div className="flex flex-col items-end justify-start gap-6 pt-4">
             <ActionDropdown file={file} />
@@ -33,9 +33,13 @@ const Card = ({ file }: { file: FileDocument }) => {
           </div>
         </div>
 
-        <div className="file-card-details pl-4">
-          <p className="subtitle-2 line-clamp-1">
+        <div className="file-card-details md:pl-4 ">
+          <p className="subtitle-2 line-clamp-1 hidden md:block">
             {file.name.length > 15 ? file.name.slice(0, 15) + "..." : file.name}
+          </p>
+
+          <p className="text-sm font-medium line-clamp-1 md:hidden">
+            {file.name.length > 15 ? file.name.slice(0, 10) + "..." : file.name}
           </p>
           <FormattedDateTime
             date={file.$createdAt}
