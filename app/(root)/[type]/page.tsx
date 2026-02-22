@@ -4,8 +4,7 @@ import Sort from "@/components/Sort";
 import { getFiles } from "@/lib/actions/file.actions";
 import Card from "@/components/Card";
 import { getFileTypesParams } from "@/lib/utils";
-import { Models } from "node-appwrite";
-import { file } from "zod";
+import { FileDocument } from "@/types";
 
 const Page = async ({ searchParams, params }: SearchParamProps) => {
   const type = ((await params)?.type as string) || "";
@@ -13,7 +12,11 @@ const Page = async ({ searchParams, params }: SearchParamProps) => {
 
   const searchText = ((await searchParams)?.query as string) || "";
   const sort = ((await searchParams)?.sort as string) || "";
-  const files = await getFiles({ types, searchText, sort });
+  const filesResult = await getFiles({ types, searchText, sort });
+  const files = filesResult as {
+    documents: FileDocument[];
+    total: number;
+  } | null;
 
   return (
     <div className="page-container p-8 h-[90vh] overflow-y-scroll">
@@ -21,7 +24,7 @@ const Page = async ({ searchParams, params }: SearchParamProps) => {
         <h1 className="h1 capitalize">{type}</h1>
         <div className="total-size-section flex justify-between  items-center px-1">
           <p className="body-1 text-left">
-            Total: <span className="h-5">{files.total}</span>
+            Total: <span className="h-5">{files?.total ?? 0}</span>
           </p>
           <div className="sort-container">
             <p className="subtitle-1 hidden sm:block text-light-100">
@@ -34,9 +37,9 @@ const Page = async ({ searchParams, params }: SearchParamProps) => {
 
       {/* Render Files */}
 
-      {files.total > 0 ? (
+      {files && files.total > 0 ? (
         <section className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4  gap-4">
-          {files.documents.map((file: Models.Document) => (
+          {files.documents.map((file: FileDocument) => (
             <h1 className="h1" key={file.$id}>
               <Card key={file.$id} file={file} />
             </h1>

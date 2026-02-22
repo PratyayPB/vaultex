@@ -7,21 +7,17 @@ import { cn, getFileType } from "@/lib/utils";
 import Image from "next/image";
 import Thumbnail from "./Thumbnail";
 import { convertFileToUrl } from "@/lib/utils";
-import { MouseEvent } from "react";
-// import { useToast } from "@/hooks/use-toast";
 import { Bounce, ToastContainer, toast } from "react-toastify";
 import { uploadFile } from "@/lib/actions/file.actions";
 import { usePathname } from "next/navigation";
 import { MAX_FILE_SIZE } from "@/constants";
-import { Toast } from "radix-ui";
-
-// import { useSession } from "next-auth/react";
 
 interface FileUploaderProps {
   ownerId: string;
   accountId: string;
   className?: string;
 }
+
 const FileUploader = ({ ownerId, accountId, className }: FileUploaderProps) => {
   const path = usePathname();
 
@@ -71,7 +67,7 @@ const FileUploader = ({ ownerId, accountId, className }: FileUploaderProps) => {
   });
 
   const handleRemoveFile = (
-    e: React.MouseEvent<HTMLImageElement, MouseEvent>,
+    e: React.MouseEvent<HTMLImageElement>,
     fileName: string,
   ) => {
     e.stopPropagation();
@@ -112,7 +108,7 @@ const FileUploader = ({ ownerId, accountId, className }: FileUploaderProps) => {
             <ul className="uploader-preview-list ">
               <h4 className="text-light-100 h4">Uploading</h4>
               {files.map((file, index) => {
-                const { type, extenstion } = getFileType(file.name);
+                const { type, extension } = getFileType(file.name);
                 return (
                   <li
                     key={`${file.name}-${index}`}
@@ -121,7 +117,7 @@ const FileUploader = ({ ownerId, accountId, className }: FileUploaderProps) => {
                     <div className="flex items-center gap-3">
                       <Thumbnail
                         type={type}
-                        extension={extenstion}
+                        extension={extension}
                         url={convertFileToUrl(file)}
                       />
                       <div className="preview-item-name">

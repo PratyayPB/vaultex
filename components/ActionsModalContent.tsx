@@ -5,9 +5,9 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import Image from "next/image";
 import Thumbnail from "./Thumbnail";
-import { Models } from "node-appwrite";
+import { FileDocument } from "@/types";
 
-const ImageThumbnail = ({ file }: { file: Models.Document }) => {
+const ImageThumbnail = ({ file }: { file: FileDocument }) => {
   return (
     <div className="file-details-thumbnail">
       <Thumbnail type={file.type} extension={file.extension} url={file.url} />
@@ -21,6 +21,7 @@ const ImageThumbnail = ({ file }: { file: Models.Document }) => {
     </div>
   );
 };
+
 const DetailRow = ({ value, label }: { value: string; label: string }) => {
   return (
     <div className="grid grid-cols-2 gap-4 ">
@@ -30,7 +31,7 @@ const DetailRow = ({ value, label }: { value: string; label: string }) => {
   );
 };
 
-export const FileDetails = ({ file }: { file: Models.Document }) => {
+export const FileDetails = ({ file }: { file: FileDocument }) => {
   return (
     <>
       <ImageThumbnail file={file} />
@@ -44,13 +45,13 @@ export const FileDetails = ({ file }: { file: Models.Document }) => {
   );
 };
 
-interface Props {
-  file: Models.Document;
+interface ShareInputProps {
+  file: FileDocument;
   onInputChange: React.Dispatch<React.SetStateAction<string[]>>;
   onRemove: (email: string) => void;
 }
 
-export const ShareInput = ({ file, onInputChange, onRemove }: Props) => {
+export const ShareInput = ({ file, onInputChange, onRemove }: ShareInputProps) => {
   return (
     <>
       <ImageThumbnail file={file} />
@@ -72,7 +73,7 @@ export const ShareInput = ({ file, onInputChange, onRemove }: Props) => {
             </p>
           </div>
           <ul className="pt-2">
-            {file.users.map((email: string) => {
+            {file.users.map((email: string) => (
               <li
                 key={email}
                 className="flex items-center justify-between gap-2"
@@ -90,8 +91,8 @@ export const ShareInput = ({ file, onInputChange, onRemove }: Props) => {
                     className="remove-icon"
                   />
                 </Button>
-              </li>;
-            })}
+              </li>
+            ))}
           </ul>
         </div>
       </div>

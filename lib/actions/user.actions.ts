@@ -2,14 +2,15 @@
 
 import { createAdminClient, createSessionClient } from "../appwrite";
 import { appwriteConfig } from "../appwrite/config";
-import { Query, ID } from "node-appwrite";
+import { Query, ID, Models } from "node-appwrite";
+import { AuthResult, CurrentUser } from "@/types";
 import { parseStringify } from "../utils";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { avatarPlaceholderUrl } from "@/constants";
 
-export const getUserByEmail = async (email: string) => {
+export const getUserByEmail = async (email: string): Promise<unknown> => {
   const { databases } = await createAdminClient();
   const result = await databases.listDocuments(
     appwriteConfig.databaseID,
@@ -19,11 +20,19 @@ export const getUserByEmail = async (email: string) => {
   return result.total > 0 ? result.documents[0] : null;
 };
 
-export const handleError = async (error: unknown, message: string) => {
+export const handleError = async (
+  error: unknown,
+  message: string,
+): Promise<never> => {
   console.log(error, message);
   throw error;
 };
-export const sendEmailOTP = async ({ email }: { email: string }) => {
+
+export const sendEmailOTP = async ({
+  email,
+}: {
+  email: string;
+}): Promise<string | undefined> => {
   const { account } = await createAdminClient();
   try {
     const session = await account.createEmailToken(ID.unique(), email);
@@ -39,7 +48,7 @@ export const createAccount = async ({
 }: {
   fullname: string;
   email: string;
-}) => {
+}): Promise<AuthResult | undefined> => {
   console.log("Creating account for:", fullname, email);
   const existingUser = await getUserByEmail(email);
   const accountId = await sendEmailOTP({ email });
@@ -59,7 +68,7 @@ export const createAccount = async ({
       },
     );
   }
-  return parseStringify({ accountId });
+  return parseStringify({ accountId }) as AuthResult;
 };
 
 export const verifySecret = async ({
@@ -68,10 +77,10 @@ export const verifySecret = async ({
 }: {
   accountId: string;
   password: string;
-}) => {
+}): Promise<unknown> => {
   try {
-    const account = await createAdminClient();
-    const session = await account.account.createSession(accountId, password);
+    const admin = await createAdminClient();
+    const session = await admin.account.createSession(accountId, password);
     (await cookies()).set("appwrite-session", session.secret, {
       path: "/",
       httpOnly: true,
@@ -84,9 +93,13 @@ export const verifySecret = async ({
   }
 };
 
-export const signoutUser = async () => {
-  const { account } = await createSessionClient();
+export const signoutUser = async (): Promise<void> => {
+  const sessionClient = await createSessionClient();
+  if (!sessionClient) {
+    redirect("/sign-in");
+  }
 
+  const { account } = sessionClient;
   try {
     await account.deleteSession("current");
     (await cookies()).delete("appwrite-session");
@@ -97,30 +110,34 @@ export const signoutUser = async () => {
   }
 };
 
-export const signinUser = async ({ email }: { email: string }) => {
+export const signinUser = async ({
+  email,
+}: {
+  email: string;
+}): Promise<AuthResult | undefined> => {
   try {
     const existingUser = await getUserByEmail(email);
     if (!existingUser) {
-      return parseStringify({ accountId: null, error: "User not found" });
+      return parseStringify({ accountId: null, error: "User not found" }) as AuthResult;
     }
     if (existingUser) {
       await sendEmailOTP({ email });
-      return parseStringify({ accountId: existingUser.accountId });
+      return parseStringify({
+        accountId: (existingUser as Models.Document & { accountId: string }).accountId,
+      }) as AuthResult;
     }
-    return parseStringify({ accountId: null, error: "User not found" });
+    return parseStringify({ accountId: null, error: "User not found" }) as AuthResult;
   } catch (error) {
     handleError(error, "Failed to sign in user");
   }
 };
 
-export const getCurrentUser = async () => {
+export const getCurrentUser = async (): Promise<CurrentUser | null> => {
   //If no session, return null
   const sessionClient = await createSessionClient();
   if (!sessionClient) {
     return null;
   }
-
-  // if (!sessionClient) return null;
 
   //getCUrrentUser
   const { databases, account } = sessionClient;
@@ -134,11 +151,16 @@ export const getCurrentUser = async () => {
   if (user.total <= 0) {
     return null;
   }
-  return parseStringify(user.documents[0]);
+  return parseStringify(user.documents[0]) as CurrentUser;
 };
 
-export const signOutUser = async () => {
-  const { account } = await createSessionClient();
+export const signOutUser = async (): Promise<void> => {
+  const sessionClient = await createSessionClient();
+  if (!sessionClient) {
+    redirect("/sign-in");
+  }
+
+  const { account } = sessionClient;
   try {
     await account.deleteSession("current");
     (await cookies()).delete("appwrite-session");
@@ -149,12 +171,18 @@ export const signOutUser = async () => {
   }
 };
 
-export const signInUser = async ({ email }: { email: string }) => {
+export const signInUser = async ({
+  email,
+}: {
+  email: string;
+}): Promise<AuthResult | undefined> => {
   try {
     const existingUser = await getUserByEmail(email);
     if (existingUser) {
       await sendEmailOTP({ email });
-      return parseStringify({ accountId: existingUser.accountId });
+      return parseStringify({
+        accountId: (existingUser as Models.Document & { accountId: string }).accountId,
+      }) as AuthResult;
     }
   } catch (error) {
     handleError(error, "Failed to sign in user");

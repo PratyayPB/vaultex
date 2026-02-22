@@ -1,0 +1,12 @@
+﻿app/(root)/layout.tsx(17,8): error TS2739: Type '{}' is missing the following properties from type 'SidebarProps': fullName, email, avatar
+app/(root)/layout.tsx(19,10): error TS2739: Type '{}' is missing the following properties from type 'MobileNavProps': $id, accountId, avatar, fullName, email
+app/(root)/layout.tsx(20,37): error TS2339: Property '$id' does not exist on type '{}'.
+app/(root)/layout.tsx(20,65): error TS2339: Property 'accountId' does not exist on type '{}'.
+components/AuthForm.tsx(65,12): error TS18046: 'user' is of type 'unknown'.
+components/AuthForm.tsx(76,20): error TS18046: 'user' is of type 'unknown'.
+lib/actions/file.actions.ts(115,35): error TS2345: Argument of type '{}' is not assignable to parameter of type 'Document'.
+  Type '{}' is missing the following properties from type 'Document': $id, $sequence, $collectionId, $databaseId, and 3 more.
+lib/actions/file.actions.ts(236,42): error TS2339: Property '$id' does not exist on type '{}'.
+lib/actions/file.actions.ts(250,29): error TS2339: Property 'type' does not exist on type 'Document'.
+lib/actions/file.actions.ts(251,41): error TS2339: Property 'size' does not exist on type 'Document'.
+lib/actions/file.actions.ts(252,31): error TS2339: Property 'size' does not exist on type 'Document'.

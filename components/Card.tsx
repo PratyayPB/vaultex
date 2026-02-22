@@ -1,11 +1,12 @@
-import { Models } from "node-appwrite";
+import { FileDocument } from "@/types";
 import React from "react";
 import Link from "next/link";
 import { convertFileSize } from "@/lib/utils";
 import Thumbnail from "./Thumbnail";
 import FormattedDateTime from "./FormattedDateTime";
 import ActionDropdown from "./ActionDropdown";
-const Card = ({ file }: { file: Models.Document }) => {
+
+const Card = ({ file }: { file: FileDocument }) => {
   return (
     <div className="bg-white p-2 m-4 w-min rounded-2xl ">
       <Link href={file.url} target="_blank" className="file-card ">

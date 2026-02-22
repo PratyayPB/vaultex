@@ -5,6 +5,7 @@ import React from "react";
 import { getCurrentUser } from "@/lib/actions/user.actions";
 import { redirect } from "next/navigation";
 import { Toaster } from "react-hot-toast";
+import { CurrentUser } from "@/types";
 
 //import Toaster
 const Layout = async ({ children }: { children: React.ReactNode }) => {
@@ -12,12 +13,26 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
   if (!currentUser) {
     redirect("/signin");
   }
+
+  // After the redirect guard, currentUser is guaranteed to be CurrentUser
+  const user = currentUser as CurrentUser;
+
   return (
     <main className="flex h-screen">
-      <Sidebar {...currentUser} />
+      <Sidebar
+        fullName={user.fullName}
+        email={user.email}
+        avatar={user.avatar}
+      />
       <section className="flex  flex-1 flex-col">
-        <MobileNav {...currentUser} />
-        <Header userId={currentUser.$id} accountId={currentUser.accountId} />
+        <MobileNav
+          $id={user.$id}
+          accountId={user.accountId}
+          avatar={user.avatar}
+          fullName={user.fullName}
+          email={user.email}
+        />
+        <Header userId={user.$id} accountId={user.accountId} />
         <div className="main-content bg-gray-100 rounded-t-2xl lg:mx-4  mx-2 ">
           {children}
         </div>

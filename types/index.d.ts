@@ -1,10 +1,61 @@
+import { Models } from "node-appwrite";
+
 declare type FileType = "document" | "image" | "video" | "audio" | "other";
+
+/**
+ * Shape of the user document returned by getCurrentUser / stored in the
+ * Appwrite users collection.
+ */
+declare interface CurrentUser extends Models.Document {
+  fullName: string;
+  email: string;
+  avatar: string;
+  accountId: string;
+}
+
+/** Shape returned by createAccount / signinUser / signInUser. */
+declare interface AuthResult {
+  accountId: string | null;
+  error?: string;
+}
+
+/** Typed owner sub-document returned by Appwrite when using `Query.select` with relationship expansion. */
+declare interface FileOwner {
+  fullName: string;
+}
+
+/**
+ * App-specific file document stored in the Appwrite files collection.
+ * Extends `Models.Document` with every field written by `uploadFile`.
+ */
+declare interface FileDocument extends Models.Document {
+  type: string;
+  name: string;
+  url: string;
+  extension: string;
+  size: number;
+  owner: FileOwner;
+  accountId: string;
+  users: string[];
+  bucketFileId: string;
+}
 
 declare type FileCategory = {
   size: number;
-  latestDate: number | string;
+  latestDate: string;
 };
 
+declare type TotalSpaceUsed = {
+  image: FileCategory;
+  document: FileCategory;
+  video: FileCategory;
+  audio: FileCategory;
+  other: FileCategory;
+  used: number;
+  all: number;
+};
+
+/** Legacy alias kept for backwards-compat with utils.ts `getUsageSummary`. */
 declare type TotalSpace = {
   document: FileCategory;
   image: FileCategory;
@@ -81,8 +132,9 @@ declare interface ThumbnailProps {
 }
 
 declare interface ShareInputProps {
-  file: Models.Document;
+  file: FileDocument;
   onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onRemove: (email: string) => void;
 }
+
 export const MAX_FILE_SIZE = 50 * 1024 * 1024; //50MB

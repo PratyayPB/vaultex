@@ -7,12 +7,20 @@ import FormattedDateTime from "@/components/FormattedDateTime";
 import { Separator } from "@/components/ui/separator";
 import Thumbnail from "@/components/Thumbnail";
 import ActionDropdown from "@/components/ActionDropdown";
-import { Models } from "node-appwrite";
+import { FileDocument, TotalSpaceUsed } from "@/types";
+
 const Dashboard = async () => {
-  const [files, totalSpace] = await Promise.all([
+  const [filesResult, totalSpaceResult] = await Promise.all([
     getFiles({ types: [], limit: 10 }),
     getTotalSpaceUsed(),
   ]);
+
+  const files = filesResult as { documents: FileDocument[]; total: number } | null;
+  const totalSpace = totalSpaceResult as TotalSpaceUsed | undefined;
+
+  if (!totalSpace) {
+    return <p className="text-center mt-20">Could not load storage data.</p>;
+  }
 
   const usageSummary = getUsageSummary(totalSpace);
 
@@ -68,7 +76,7 @@ const Dashboard = async () => {
                     </h5>
 
                     <FormattedDateTime
-                      date={summary.latestDate}
+                      date={String(summary.latestDate)}
                       className="text-center absolute top-10 left-24"
                     />
                   </div>
@@ -87,9 +95,9 @@ const Dashboard = async () => {
       {/*Recent Files */}
       <section className="dashboard-recent-files w-full h-full px-4 py-4 bg-white rounded-2xl ">
         <h2 className="h3 xl:h2 text-light-100">Recent files uploaded</h2>
-        {files.documents.length > 0 ? (
+        {files && files.documents.length > 0 ? (
           <ul className="mt-5 flex flex-col gap-5 w-full">
-            {files.documents.map((file: Models.Document) => (
+            {files.documents.map((file: FileDocument) => (
               <Link
                 href={file.url}
                 key={file.$id}

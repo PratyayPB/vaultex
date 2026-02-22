@@ -21,25 +21,23 @@ import {
   DialogTrigger,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Models } from "node-appwrite";
 import { useState } from "react";
-import { constructDownloadUrl, sanitizeFileName } from "@/lib/utils";
+import { constructDownloadUrl } from "@/lib/utils";
 import Link from "next/link";
 import { Input } from "./ui/input";
 import {
   renameFile,
   updateFileUsers,
   deleteFile,
-  downloadFile,
 } from "@/lib/actions/file.actions";
 import { usePathname } from "next/navigation";
 import { FileDetails, ShareInput } from "./ActionsModalContent";
-import { ActionType } from "@/types";
+import { ActionType, FileDocument } from "@/types";
 import { actionsDropdownItems } from "@/constants";
 import { toast } from "react-toastify";
 import { storage } from "@/lib/appwrite/client";
 
-const ActionDropdown = ({ file }: { file: Models.Document }) => {
+const ActionDropdown = ({ file }: { file: FileDocument }) => {
   const [isModalOpen, setisModalOpen] = useState(false);
   const [isDropdownOpen, setisDropdownOpen] = useState(false);
   const [action, setaction] = useState<ActionType | null>(null);
@@ -53,10 +51,10 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
     setisDropdownOpen(false);
     setaction(null);
     setname(file.name);
-    //setEmails([])
   };
+
   const downloadFile = async (fileId: string, fileName: string) => {
-    const arrayBuffer = storage.getFileDownload(
+    const arrayBuffer = await storage.getFileDownload(
       process.env.NEXT_PUBLIC_APPWRITE_BUCKET!,
       fileId,
     );
@@ -76,7 +74,6 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
   const handleAction = async () => {
     if (!action) return;
     setisLoading(true);
-    let success = false;
     const actions = {
       rename: () =>
         renameFile({
@@ -108,23 +105,21 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
           });
       },
     };
-    success = await actions[action.value as keyof typeof actions]();
-    if (success) {
-      closeAllModals();
-    }
+    await actions[action.value as keyof typeof actions]();
     setisLoading(false);
   };
 
-  const handleRemoveUser = async ({ email }: { email: string }) => {
+  const handleRemoveUser = async (email: string) => {
     const updatedEmails = emails.filter((e) => e !== email);
-    const success = await updateFileUsers({
+    await updateFileUsers({
       fileId: file.$id,
       emails: updatedEmails,
       path,
     });
-    if (!success) setemails(updatedEmails);
+    setemails(updatedEmails);
     closeAllModals();
   };
+
   const renderDialogContent = () => {
     if (!action) return null;
 
@@ -198,7 +193,6 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           {actionsDropdownItems.map(
-            //import from index.ts
             (actionItem) => (
               <DropdownMenuItem
                 key={actionItem.value}

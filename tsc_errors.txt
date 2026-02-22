@@ -1,0 +1,62 @@
+﻿app/(root)/page.tsx(95,28): error TS2339: Property 'url' does not exist on type 'Document'.
+app/(root)/page.tsx(101,30): error TS2339: Property 'type' does not exist on type 'Document'.
+app/(root)/page.tsx(102,35): error TS2339: Property 'extension' does not exist on type 'Document'.
+app/(root)/page.tsx(103,29): error TS2339: Property 'url' does not exist on type 'Document'.
+app/(root)/page.tsx(108,29): error TS2339: Property 'name' does not exist on type 'Document'.
+app/(root)/page.tsx(109,32): error TS2339: Property 'name' does not exist on type 'Document'.
+app/(root)/page.tsx(110,32): error TS2339: Property 'name' does not exist on type 'Document'.
+components/ActionDropdown.tsx(46,41): error TS2339: Property 'name' does not exist on type 'Document'.
+components/ActionDropdown.tsx(55,18): error TS2339: Property 'name' does not exist on type 'Document'.
+components/ActionDropdown.tsx(63,28): error TS2322: Type 'Promise<ArrayBuffer>' is not assignable to type 'BlobPart'.
+  Type 'Promise<ArrayBuffer>' is missing the following properties from type 'ArrayBuffer': byteLength, slice, maxByteLength, resizable, and 4 more.
+components/ActionDropdown.tsx(85,27): error TS2339: Property 'extension' does not exist on type 'Document'.
+components/ActionDropdown.tsx(101,30): error TS2339: Property 'bucketFileId' does not exist on type 'Document'.
+components/ActionDropdown.tsx(111,5): error TS2322: Type 'void' is not assignable to type 'boolean'.
+components/ActionDropdown.tsx(152,15): error TS2322: Type '({ email }: { email: string; }) => Promise<void>' is not assignable to type '(email: string) => void'.
+  Types of parameters '__0' and 'email' are incompatible.
+    Type 'string' is not assignable to type '{ email: string; }'.
+components/ActionDropdown.tsx(158,56): error TS2339: Property 'name' does not exist on type 'Document'.
+components/ActionDropdown.tsx(197,19): error TS2339: Property 'name' does not exist on type 'Document'.
+components/ActionDropdown.tsx(209,49): error TS2339: Property 'name' does not exist on type 'Document'.
+components/ActionsModalContent.tsx(13,29): error TS2339: Property 'type' does not exist on type 'Document'.
+components/ActionsModalContent.tsx(13,51): error TS2339: Property 'extension' does not exist on type 'Document'.
+components/ActionsModalContent.tsx(13,72): error TS2339: Property 'url' does not exist on type 'Document'.
+components/ActionsModalContent.tsx(15,46): error TS2339: Property 'name' does not exist on type 'Document'.
+components/ActionsModalContent.tsx(38,32): error TS2339: Property 'extension' does not exist on type 'Document'.
+components/ActionsModalContent.tsx(39,48): error TS2339: Property 'size' does not exist on type 'Document'.
+components/ActionsModalContent.tsx(40,32): error TS2339: Property 'owner' does not exist on type 'Document'.
+components/ActionsModalContent.tsx(71,21): error TS2339: Property 'users' does not exist on type 'Document'.
+components/ActionsModalContent.tsx(75,19): error TS2339: Property 'users' does not exist on type 'Document'.
+components/Card.tsx(11,24): error TS2339: Property 'url' does not exist on type 'Document'.
+components/Card.tsx(14,24): error TS2339: Property 'type' does not exist on type 'Document'.
+components/Card.tsx(15,29): error TS2339: Property 'extension' does not exist on type 'Document'.
+components/Card.tsx(16,23): error TS2339: Property 'url' does not exist on type 'Document'.
+components/Card.tsx(22,71): error TS2339: Property 'size' does not exist on type 'Document'.
+components/Card.tsx(28,19): error TS2339: Property 'name' does not exist on type 'Document'.
+components/Card.tsx(28,43): error TS2339: Property 'name' does not exist on type 'Document'.
+components/Card.tsx(28,76): error TS2339: Property 'name' does not exist on type 'Document'.
+components/Card.tsx(35,22): error TS2339: Property 'owner' does not exist on type 'Document'.
+components/FileUploader.tsx(115,31): error TS2339: Property 'extenstion' does not exist on type '{ type: string; extension: string; }'.
+components/FileUploader.tsx(143,56): error TS2345: Argument of type 'MouseEvent<HTMLImageElement, MouseEvent>' is not assignable to parameter of type 'MouseEvent<HTMLImageElement, MouseEvent<Element, MouseEvent>>'.
+  Type 'MouseEvent' is missing the following properties from type 'MouseEvent<Element, MouseEvent>': nativeEvent, isDefaultPrevented, isPropagationStopped, persist
+components/FormattedDateTime.tsx(13,23): error TS2345: Argument of type 'string | number' is not assignable to parameter of type 'string | null | undefined'.
+  Type 'number' is not assignable to type 'string'.
+components/Search.tsx(48,16): error TS2339: Property 'type' does not exist on type 'Document'.
+components/Search.tsx(48,41): error TS2339: Property 'type' does not exist on type 'Document'.
+components/Search.tsx(48,75): error TS2339: Property 'type' does not exist on type 'Document'.
+components/Search.tsx(82,36): error TS2339: Property 'type' does not exist on type 'Document'.
+components/Search.tsx(83,41): error TS2339: Property 'extension' does not exist on type 'Document'.
+components/Search.tsx(84,35): error TS2339: Property 'url' does not exist on type 'Document'.
+components/Search.tsx(88,31): error TS2339: Property 'name' does not exist on type 'Document'.
+lib/actions/file.actions.ts(81,44): error TS2339: Property 'email' does not exist on type 'Document'.
+lib/actions/file.actions.ts(121,73): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+lib/actions/file.actions.ts(237,23): error TS2552: Cannot find name 'storage'. Did you mean 'Storage'?
+lib/actions/file.actions.ts(247,13): error TS2339: Property 'databases' does not exist on type '{ readonly account: Account; readonly databases: Databases; } | null'.
+lib/actions/file.actions.ts(267,30): error TS7006: Parameter 'file' implicitly has an 'any' type.
+lib/actions/file.actions.ts(269,7): error TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{ image: { size: number; latestDate: string; }; document: { size: number; latestDate: string; }; video: { size: number; latestDate: string; }; audio: { size: number; latestDate: string; }; other: { size: number; latestDate: string; }; used: number; all: number; }'.
+lib/actions/file.actions.ts(273,10): error TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{ image: { size: number; latestDate: string; }; document: { size: number; latestDate: string; }; video: { size: number; latestDate: string; }; audio: { size: number; latestDate: string; }; other: { size: number; latestDate: string; }; used: number; all: number; }'.
+lib/actions/file.actions.ts(274,46): error TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{ image: { size: number; latestDate: string; }; document: { size: number; latestDate: string; }; video: { size: number; latestDate: string; }; audio: { size: number; latestDate: string; }; other: { size: number; latestDate: string; }; used: number; all: number; }'.
+lib/actions/file.actions.ts(276,9): error TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{ image: { size: number; latestDate: string; }; document: { size: number; latestDate: string; }; video: { size: number; latestDate: string; }; audio: { size: number; latestDate: string; }; other: { size: number; latestDate: string; }; used: number; all: number; }'.
+lib/actions/user.actions.ts(88,11): error TS2339: Property 'account' does not exist on type '{ readonly account: Account; readonly databases: Databases; } | null'.
+lib/actions/user.actions.ts(141,11): error TS2339: Property 'account' does not exist on type '{ readonly account: Account; readonly databases: Databases; } | null'.

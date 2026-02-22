@@ -4,7 +4,7 @@ import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { usePathname, useSearchParams } from "next/navigation";
 import { getFiles } from "@/lib/actions/file.actions";
-import { Models } from "node-appwrite";
+import { FileDocument } from "@/types";
 import Thumbnail from "./Thumbnail";
 import { useRouter } from "next/navigation";
 import { useDebounce } from "use-debounce";
@@ -14,7 +14,7 @@ const Search = () => {
   const [query, setquery] = useState("");
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get("query") || "";
-  const [results, setresults] = useState<Models.Document[]>([]);
+  const [results, setresults] = useState<FileDocument[]>([]);
   const [open, setopen] = useState(false);
   const router = useRouter();
   const path = usePathname();
@@ -27,8 +27,10 @@ const Search = () => {
         setopen(false);
         return router.push(path.replace(searchParams.toString(), ""));
       }
-      const files = await getFiles({ types: [], searchText: debouncedQuery });
-      setresults(files.documents);
+      const files = await getFiles({ types: [], searchText: debouncedQuery }) as {
+        documents: FileDocument[];
+      } | null;
+      setresults(files?.documents ?? []);
       setopen(true);
     };
     fetchFiles();
@@ -40,7 +42,7 @@ const Search = () => {
     }
   }, [searchQuery]);
 
-  const handleClickItem = (file: Models.Document) => {
+  const handleClickItem = (file: FileDocument) => {
     setopen(false);
     setresults([]);
 

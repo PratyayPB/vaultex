@@ -20,6 +20,7 @@ import OTPModal from "./OTPModal";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { Bounce, ToastContainer } from "react-toastify";
+import { AuthResult } from "@/types";
 // import OtpModal from "@/components/OTPModal";
 
 type FormType = "sign-in" | "sign-up";
@@ -37,7 +38,7 @@ const authFormSchema = (formType: FormType) => {
 const AuthForm = ({ type }: { type: FormType }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [accountId, setAccountId] = useState(null);
+  const [accountId, setAccountId] = useState<string | null>(null);
 
   const formSchema = authFormSchema(type);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -54,7 +55,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
     setErrorMessage("");
 
     try {
-      const user =
+      const user: AuthResult | undefined =
         type === "sign-up"
           ? await createAccount({
               fullname: values.fullName || "",
@@ -62,7 +63,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
             })
           : await signinUser({ email: values.email });
 
-      if (!user.accountId) {
+      if (!user?.accountId) {
         toast.error(
           "Credentials doesn't match our records. Redirecting to signup page..",
         );
@@ -73,7 +74,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
         return;
       }
 
-      setAccountId(user.accountId);
+      setAccountId(user?.accountId ?? null);
     } catch {
       setErrorMessage("Failed to create account. Please try again.");
     } finally {

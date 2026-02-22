@@ -1,11 +1,12 @@
 import { formatDateTime } from "@/lib/utils";
 import React from "react";
 import { cn } from "@/lib/utils";
+
 const FormattedDateTime = ({
   date,
   className,
 }: {
-  date: string | number;
+  date: string;
   className?: string;
 }) => {
   return (
