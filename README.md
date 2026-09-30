@@ -58,7 +58,6 @@ Vaultex solves this by integrating Appwrite's robust backend services to provide
 
 ### Application Preview
 
-![Login / OTP Page](https://ik.imagekit.io/ulycoljug/Portfolio-resources/vaultex/Screenshot%202026-02-18%20185038.png)
 ![Dashboard Overview](https://ik.imagekit.io/ulycoljug/Portfolio-resources/vaultex/Screenshot%202026-02-22%20165830.png)
 ![File Management](https://ik.imagekit.io/ulycoljug/Portfolio-resources/vaultex/Screenshot%202026-02-22%20165814.png)
 ![Secure Sharing](https://ik.imagekit.io/ulycoljug/Portfolio-resources/vaultex/Screenshot%202026-02-22%20165745.png)
