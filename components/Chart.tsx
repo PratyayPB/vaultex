@@ -31,37 +31,35 @@ const chartConfig = {
 
 export const Chart = ({ used = 0 }: { used: number }) => {
   const chartData = [{ storage: "used", 10: used, fill: "white" }];
+  const percentage = used && calculatePercentage(used)
+    ? calculatePercentage(used).toString().replace(/^0+/, "")
+    : "0";
 
   return (
-    <Card className="chart max-w-full  rounded-2xl bg-brand-100   max-h-90 h-90 flex flex-col items-center pb-19">
-      <CardContent className="flex-1 p-0  items-center justify-center rounded-t-2xl">
-        <div className=" w-full h-60 flex items-center justify-center ">
+    <Card className="chart w-full rounded-2xl bg-brand text-white shadow-drop-2 p-4 xs:p-5 sm:p-6 border-none flex flex-col sm:flex-row lg:flex-col xl:flex-row items-center justify-between gap-4">
+      <CardContent className="p-0 flex items-center justify-center w-full sm:w-1/2 lg:w-full xl:w-1/2">
+        <div className="w-full max-w-[200px] xs:max-w-[220px] h-[180px] xs:h-[200px] flex items-center justify-center">
           <ChartContainer
             config={chartConfig}
-            className="
-    chart-container
-    w-full h-full
-    [&_.recharts-radial-bar-background-sector]:!fill-gray-200
-    [&_.recharts-radial-bar-sector]:!fill-indigo-600
-  "
+            className="chart-container w-full h-full [&_.recharts-radial-bar-background-sector]:!fill-white/20 [&_.recharts-radial-bar-sector]:!fill-white"
           >
             <RadialBarChart
               data={chartData}
               startAngle={90}
               endAngle={Number(calculatePercentage(used)) + 90}
-              innerRadius={86}
-              outerRadius={140}
+              innerRadius={70}
+              outerRadius={105}
             >
               <PolarGrid
                 gridType="circle"
                 radialLines={false}
-                stroke="hsl(0, 83%, 90.5%)"
+                stroke="rgba(255, 255, 255, 0.2)"
                 className="polar-grid"
-                polarRadius={[96, 75.7]}
+                polarRadius={[78, 65]}
               />
               <RadialBar
                 dataKey="storage"
-                background={{ fill: "transparent" }}
+                background={{ fill: "rgba(255, 255, 255, 0.2)" }}
                 cornerRadius={10}
               />
               <PolarRadiusAxis tick={false} tickLine={false} axisLine={false}>
@@ -78,19 +76,14 @@ export const Chart = ({ used = 0 }: { used: number }) => {
                           <tspan
                             x={viewBox.cx}
                             y={viewBox.cy}
-                            className="chart-total-percentage font-bold text-xl fill-white/90"
+                            className="chart-total-percentage font-bold text-xl xs:text-2xl fill-white"
                           >
-                            {used && calculatePercentage(used)
-                              ? calculatePercentage(used)
-                                  .toString()
-                                  .replace(/^0+/, "")
-                              : "0"}
-                            %
+                            {percentage}%
                           </tspan>
                           <tspan
                             x={viewBox.cx}
-                            y={(viewBox.cy || 0) + 24}
-                            className="fill-white/90 font-semibold"
+                            y={(viewBox.cy || 0) + 20}
+                            className="fill-white/80 font-medium text-xs xs:text-sm"
                           >
                             Space used
                           </tspan>
@@ -104,13 +97,16 @@ export const Chart = ({ used = 0 }: { used: number }) => {
           </ChartContainer>
         </div>
       </CardContent>
-      <CardHeader className="chart-details flex flex-col items-center">
-        <CardTitle className="chart-title text-xl text-gray-100 font-medium">
-          Storage Used
+      <CardHeader className="chart-details p-0 flex flex-col items-center sm:items-start lg:items-center xl:items-start text-center sm:text-left lg:text-center xl:text-left">
+        <CardTitle className="chart-title text-sm xs:text-base text-white/80 font-medium">
+          Available Storage
         </CardTitle>
-        <CardDescription className="chart-description text-2xl font-bold text-white">
-          {used ? convertFileSize(used) : "2GB"} / 2GB
+        <CardDescription className="chart-description text-xl xs:text-2xl sm:text-3xl font-bold text-white mt-1">
+          {used ? convertFileSize(used) : "0 Bytes"} / 2GB
         </CardDescription>
+        <p className="caption text-white/70 mt-1 text-xs">
+          2GB Free Storage Tier
+        </p>
       </CardHeader>
     </Card>
   );

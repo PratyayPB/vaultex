@@ -125,15 +125,16 @@ const ActionDropdown = ({ file }: { file: FileDocument }) => {
 
     const { value, label } = action;
     return (
-      <DialogContent className="shad-dialog button">
+      <DialogContent className="shad-dialog w-[92vw] max-w-[420px] sm:max-w-md p-4 xs:p-6 rounded-2xl">
         <DialogHeader className="flex flex-col gap-3">
-          <DialogTitle className="text-center text-light-100">
+          <DialogTitle className="text-center text-dark-100 font-bold text-base xs:text-lg">
             {label}
           </DialogTitle>
           {value === "rename" && (
             <Input
               type="text"
               value={name}
+              className="shad-input"
               onChange={(e) => {
                 setname(e.target.value);
               }}
@@ -155,7 +156,7 @@ const ActionDropdown = ({ file }: { file: FileDocument }) => {
           )}
         </DialogHeader>
         {["rename", "share", "delete"].includes(value) && (
-          <DialogFooter className="flex flex-col gap-3 md:flex-row">
+          <DialogFooter className="flex flex-col gap-2.5 sm:flex-row mt-4">
             <Button onClick={closeAllModals} className="modal-cancel-button">
               Cancel
             </Button>
@@ -163,10 +164,10 @@ const ActionDropdown = ({ file }: { file: FileDocument }) => {
               <p className="capitalize">{value}</p>
               {isLoading && (
                 <Image
-                  src="assets/icons/loader.svg"
-                  width={24}
-                  height={24}
-                  className="animate-spin"
+                  src="/assets/icons/loader.svg"
+                  width={20}
+                  height={20}
+                  className="animate-spin ml-1"
                   alt="loader"
                 />
               )}
@@ -179,24 +180,25 @@ const ActionDropdown = ({ file }: { file: FileDocument }) => {
   return (
     <Dialog open={isModalOpen} onOpenChange={setisModalOpen}>
       <DropdownMenu open={isDropdownOpen} onOpenChange={setisDropdownOpen}>
-        <DropdownMenuTrigger asChild className="shad-no-focus">
+        <DropdownMenuTrigger className="p-1 rounded-full hover:bg-light-300 transition-colors cursor-pointer outline-none">
           <Image
             src="/assets/icons/dots.svg"
             alt="dots"
-            width={34}
-            height={34}
+            width={20}
+            height={20}
+            className="size-5 xs:size-6"
           />
         </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuLabel className="max-w-50 truncate">
+        <DropdownMenuContent className="w-48 rounded-xl shadow-xl border border-light-200/40 bg-white p-1 z-50">
+          <DropdownMenuLabel className="max-w-44 truncate text-xs font-semibold text-light-100 px-2 py-1.5">
             {file.name}
           </DropdownMenuLabel>
-          <DropdownMenuSeparator />
+          <DropdownMenuSeparator className="bg-light-200/40 my-1" />
           {actionsDropdownItems.map(
             (actionItem) => (
               <DropdownMenuItem
                 key={actionItem.value}
-                className="shad-dropdown=item"
+                className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs xs:text-sm text-dark-100 hover:bg-light-300 cursor-pointer transition-colors"
                 onClick={() => {
                   setaction(actionItem);
                   if (actionItem.value === "download") {
@@ -213,25 +215,14 @@ const ActionDropdown = ({ file }: { file: FileDocument }) => {
                   }
                 }}
               >
-                {actionItem.value === "download" ? (
-                  <Image
-                    src={actionItem.icon}
-                    width={30}
-                    height={30}
-                    alt={actionItem.label}
-                  />
-                ) : (
-                  <div className="flex items-center gap-2">
-                    <Image
-                      src={actionItem.icon}
-                      width={30}
-                      height={30}
-                      alt={actionItem.label}
-                    />
-                  </div>
-                )}
-
-                {actionItem.label}
+                <Image
+                  src={actionItem.icon}
+                  width={18}
+                  height={18}
+                  alt={actionItem.label}
+                  className="size-4 opacity-70"
+                />
+                <span>{actionItem.label}</span>
               </DropdownMenuItem>
             ),
           )}

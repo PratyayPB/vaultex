@@ -9,6 +9,10 @@ module.exports = {
   ],
   theme: {
     extend: {
+      screens: {
+        xs: "480px",
+        "3xl": "1920px",
+      },
       colors: {
         brand: {
           100: "#EA6365",

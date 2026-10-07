@@ -25,109 +25,103 @@ const Dashboard = async () => {
   const usageSummary = getUsageSummary(totalSpace);
 
   return (
-    <div
-      className="dashboard-container flex flex-col gap-20 lg:grid grid-cols-2 gap-4 overflow-y-auto  
-    lg:max-h-[90vh] h-full mx-5 my-5  [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
-    >
-      <section className="flex flex-col gap-4 w-full h-full">
+    <div className="dashboard-container p-3 xs:p-4 sm:p-6 xl:p-8 flex flex-col lg:grid lg:grid-cols-12 gap-5 xl:gap-6 2xl:gap-8 max-w-[1800px] mx-auto w-full">
+      {/* Left Column: Storage Chart & Summary Cards */}
+      <section className="lg:col-span-7 xl:col-span-7 2xl:col-span-7 flex flex-col gap-5 xl:gap-6">
         <Chart used={totalSpace.used} />
 
-        <ul className="dashboard-summary-list grid grid-cols-2 gap-x-4 gap-y-20">
-          {usageSummary.map((summary) => (
-            <Link
-              href={summary.url}
-              key={summary.title}
-              className="dashboard-summary-card"
-            >
-              <div className="space-y-4 ">
-                <div className="relative w-fit max-w-fit mx-auto">
-                  <Image
-                    src={summary.icon}
-                    alt="uploaded-image"
-                    width={250}
-                    height={800}
-                    className="summary-type-icon hidden lg:block "
-                  />
-
-                  {/* Mobile View  */}
-                  <Image
-                    src={summary.icon}
-                    alt="uploaded-image"
-                    width={200}
-                    height={500}
-                    className="summary-type-icon lg:hidden"
-                  />
-
-                  <h4 className="summary-type-size absolute top-11 left-42 font-semibold hidden lg:block">
-                    {convertFileSize(summary.size) || 0}
-                  </h4>
-                  {/* Mobile View  */}
-                  <h4 className="summary-type-size absolute top-11 left-24 text-xl font-semibold lg:hidden">
-                    {convertFileSize(summary.size) || 0}
-                  </h4>
-
-                  <div className="absolute bg-white h-20 w-58.5 left-4 hidden lg:block">
-                    <h5 className="summary-type-title absolute bottom-22 left-20 text-right font-bold text-xl ">
-                      {summary.title}
-                    </h5>
-                    <Separator className="bg-light-200 absolute top-3 left-20.5 w-38" />
-                    <h5 className="absolute top-5 left-36 w-32 font-light text-light-200 text-xs">
-                      Last updated
-                    </h5>
-
-                    <FormattedDateTime
-                      date={String(summary.latestDate)}
-                      className="text-center absolute top-10 left-24"
-                    />
+        <div className="space-y-3">
+          <h3 className="h4 text-dark-100 font-semibold px-1">Categories</h3>
+          <ul className="dashboard-summary-list grid grid-cols-2 gap-3 xs:gap-4">
+            {usageSummary.map((summary) => (
+              <li key={summary.title} className="w-full">
+                <Link
+                  href={summary.url}
+                  className="dashboard-summary-card bg-white rounded-2xl p-3.5 xs:p-4 sm:p-5 border border-light-200/40 shadow-sm hover:shadow-drop-3 transition-all duration-200 flex flex-col justify-between gap-3 sm:gap-4 relative overflow-hidden group h-full cursor-pointer hover:border-brand/40"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="size-10 xs:size-11 sm:size-12 rounded-full bg-brand/10 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                      <Image
+                        src={summary.icon}
+                        alt={summary.title}
+                        width={24}
+                        height={24}
+                        className="size-5 sm:size-6"
+                      />
+                    </div>
+                    <span className="text-xs xs:text-sm sm:text-base font-bold text-dark-100 truncate text-right">
+                      {convertFileSize(summary.size) || "0 Bytes"}
+                    </span>
                   </div>
-                  {/* Mobile View  */}
-                  <div className="absolute bg-white h-20 w-46.75 left-[13px] lg:hidden">
-                    <h5 className="summary-type-title absolute bottom-6 left-6 text-right font-bold text-xl lg:hidden ">
+
+                  <div className="space-y-1">
+                    <h4 className="font-semibold text-dark-100 text-sm xs:text-base">
                       {summary.title}
-                    </h5>
+                    </h4>
+                    <Separator className="bg-light-200/30 my-1" />
+                    <div className="flex items-center justify-between text-[10px] xs:text-[11px] sm:text-xs text-light-200 gap-1">
+                      <span className="truncate">Updated</span>
+                      <FormattedDateTime
+                        date={String(summary.latestDate)}
+                        className="truncate text-light-100 font-medium"
+                      />
+                    </div>
                   </div>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </ul>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
       </section>
-      {/*Recent Files */}
-      <section className="dashboard-recent-files w-full h-full px-4 py-4 bg-white rounded-2xl ">
-        <h2 className="h3 xl:h2 text-light-100">Recent files uploaded</h2>
+
+      {/* Right Column: Recent Files */}
+      <section className="lg:col-span-5 xl:col-span-5 2xl:col-span-5 flex flex-col bg-white rounded-2xl p-4 xs:p-5 sm:p-6 border border-light-200/40 shadow-sm h-full">
+        <h3 className="h4 text-dark-100 font-semibold mb-4">Recent files uploaded</h3>
         {files && files.documents.length > 0 ? (
-          <ul className="mt-5 flex flex-col gap-5 w-full">
+          <ul className="flex flex-col gap-2.5 sm:gap-3 w-full flex-1 overflow-y-auto remove-scrollbar max-h-[500px] lg:max-h-none">
             {files.documents.map((file: FileDocument) => (
-              <Link
-                href={file.url}
+              <li
                 key={file.$id}
-                target="_blank"
-                className="flex items-center gap-3 w-full"
+                className="flex items-center justify-between p-2.5 sm:p-3 rounded-xl hover:bg-light-300 transition-colors border border-transparent hover:border-light-200/30 gap-3 group"
               >
-                <Thumbnail
-                  type={file.type}
-                  extension={file.extension}
-                  url={file.url}
-                />
-                <div className="reent-file-details flex gap-4 items-center w-full ">
-                  <div className="flex flex-col gap-1 w-full">
-                    <p className="recent-file-name">
-                      {file.name.length > 15
-                        ? file.name.slice(0, 15) + "..."
-                        : file.name}
+                <Link
+                  href={file.url}
+                  target="_blank"
+                  className="flex items-center gap-3 min-w-0 flex-1"
+                >
+                  <Thumbnail
+                    type={file.type}
+                    extension={file.extension}
+                    url={file.url}
+                    className="size-9 sm:size-10 min-w-9 sm:min-w-10 shrink-0"
+                  />
+                  <div className="flex flex-col min-w-0 flex-1">
+                    <p className="recent-file-name text-xs xs:text-sm font-semibold text-dark-100 truncate group-hover:text-brand transition-colors">
+                      {file.name}
                     </p>
                     <FormattedDateTime
                       date={file.$createdAt}
-                      className="caption"
+                      className="caption text-[11px] text-light-200 truncate mt-0.5"
                     />
                   </div>
+                </Link>
+                <div className="shrink-0">
                   <ActionDropdown file={file} />
                 </div>
-              </Link>
+              </li>
             ))}
           </ul>
         ) : (
-          <p className="empty-list">No files uploaded</p>
+          <div className="flex-1 flex flex-col items-center justify-center py-12 text-center">
+            <Image
+              src="/assets/icons/file-document-light.svg"
+              alt="Empty"
+              width={48}
+              height={48}
+              className="size-12 opacity-30 mb-2"
+            />
+            <p className="empty-list text-light-200 text-sm">No files uploaded yet</p>
+          </div>
         )}
       </section>
     </div>

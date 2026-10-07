@@ -18,13 +18,13 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
   const user = currentUser as CurrentUser;
 
   return (
-    <main className="flex h-screen">
+    <main className="flex h-screen w-full overflow-hidden bg-white 2xl:max-w-[2000px] 2xl:mx-auto">
       <Sidebar
         fullName={user.fullName}
         email={user.email}
         avatar={user.avatar}
       />
-      <section className="flex  flex-1 flex-col">
+      <section className="flex flex-1 flex-col h-screen overflow-hidden min-w-0">
         <MobileNav
           $id={user.$id}
           accountId={user.accountId}
@@ -33,7 +33,7 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
           email={user.email}
         />
         <Header userId={user.$id} accountId={user.accountId} />
-        <div className="main-content bg-gray-100 rounded-t-2xl lg:mx-4  mx-2 ">
+        <div className="main-content flex-1 overflow-y-auto bg-light-400 rounded-t-2xl lg:rounded-2xl mb-0 lg:mb-3 lg:mr-4 mx-2 xs:mx-3 sm:mx-4 lg:mx-0">
           {children}
         </div>
       </section>

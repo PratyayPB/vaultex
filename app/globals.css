@@ -92,19 +92,19 @@
 @layer utilities {
   /* TYPOGRAPHY */
   .h1 {
-    @apply text-[34px] leading-[42px] font-bold;
+    @apply text-[24px] xs:text-[28px] sm:text-[30px] lg:text-[34px] leading-[32px] xs:leading-[36px] sm:leading-[38px] lg:leading-[42px] font-bold;
   }
   .h2 {
-    @apply text-[24px] leading-[36px] font-bold;
+    @apply text-[19px] xs:text-[21px] sm:text-[24px] leading-[26px] xs:leading-[30px] sm:leading-[36px] font-bold;
   }
   .h3 {
-    @apply text-[20px] leading-[28px] font-semibold;
+    @apply text-[17px] xs:text-[18px] sm:text-[20px] leading-[23px] xs:leading-[25px] sm:leading-[28px] font-semibold;
   }
   .h4 {
-    @apply text-[18px] leading-[20px] font-medium;
+    @apply text-[15px] xs:text-[16px] sm:text-[18px] leading-[18px] sm:leading-[20px] font-medium;
   }
   .h5 {
-    @apply text-[16px] leading-[24px] font-semibold;
+    @apply text-[14px] xs:text-[15px] sm:text-[16px] leading-[20px] sm:leading-[24px] font-semibold;
   }
 
   .subtitle-1 {
@@ -164,6 +164,10 @@
 /* ---------------- THEME TOKENS ---------------- */
 
 @theme {
+  /* Breakpoints */
+  --breakpoint-xs: 480px;
+  --breakpoint-3xl: 1920px;
+
   /* Brand */
   --color-brand: #fa7275;
   --color-brand-100: #ea6365;
@@ -235,6 +239,132 @@
   --shadow-drop-2: 0 8px 30px rgba(65, 89, 214, 0.3);
   --shadow-drop-3: 0 8px 30px rgba(65, 89, 214, 0.1);
 }
+
+@layer utilities {
+  /* Responsive utilities & component classes */
+  .auth-form {
+    @apply w-full max-w-[340px] xs:max-w-[400px] sm:max-w-[440px] lg:max-w-[480px] mx-auto transition-all;
+  }
+
+  .form-title {
+    @apply text-2xl xs:text-3xl sm:text-4xl font-bold text-dark-100 mb-6 sm:mb-8;
+  }
+
+  .shad-form-item {
+    @apply flex flex-col gap-1.5 w-full;
+  }
+
+  .shad-form-label {
+    @apply text-xs xs:text-sm font-medium text-light-100;
+  }
+
+  .shad-input {
+    @apply rounded-xl border border-light-200/50 bg-white px-3.5 py-2.5 xs:py-3 text-xs xs:text-sm placeholder:text-light-200 focus-visible:ring-1 focus-visible:ring-brand shadow-sm transition-all;
+  }
+
+  .shad-form-message {
+    @apply text-xs text-red mt-1;
+  }
+
+  .form-submit-button {
+    @apply bg-brand hover:bg-brand-100 text-white font-medium h-11 xs:h-12 w-full flex items-center justify-center rounded-full shadow-drop-1 transition-all duration-300 active:scale-95 text-xs xs:text-sm;
+  }
+
+  .shadcn-submit-btn {
+    @apply bg-brand hover:bg-brand-100 text-white font-medium h-11 xs:h-12 w-full flex items-center justify-center rounded-full shadow-drop-1 transition-all duration-300 active:scale-95 text-xs xs:text-sm;
+  }
+
+  .error-message {
+    @apply text-red text-xs xs:text-sm mt-1 text-center font-medium;
+  }
+
+  .sidebar-nav-item {
+    @apply w-full flex items-center gap-3 px-4 py-3 rounded-full transition-all text-light-100 hover:bg-brand/10 hover:text-brand font-medium text-sm;
+  }
+
+  .shad-active {
+    @apply !bg-brand !text-white shadow-drop-2 font-semibold;
+  }
+
+  .nav-icon-active {
+    @apply !filter-none !opacity-100 [filter:brightness(0)_invert(1)];
+  }
+
+  .mobile-sign-out-button {
+    @apply flex items-center gap-3 text-red font-medium p-3 rounded-xl hover:bg-red/10 w-full transition-colors text-sm;
+  }
+
+  .uploader-button {
+    @apply flex items-center justify-center gap-2 bg-brand hover:bg-brand-100 text-white font-semibold py-2 xs:py-2.5 px-3.5 xs:px-5 sm:px-6 rounded-full shadow-drop-1 transition-all duration-200 active:scale-95 text-xs xs:text-sm cursor-pointer whitespace-nowrap;
+  }
+
+  .uploader-preview-list {
+    @apply absolute right-0 top-full mt-3 w-[calc(100vw-2rem)] xs:w-80 sm:w-96 bg-white border border-light-200/40 p-4 rounded-2xl shadow-xl z-50 max-h-72 overflow-y-auto space-y-3;
+  }
+
+  .uploader-preview-item {
+    @apply flex items-center justify-between p-2 rounded-xl bg-light-300/50 border border-light-200/30 gap-2;
+  }
+
+  .preview-item-name {
+    @apply text-xs xs:text-sm text-light-100 font-medium truncate max-w-[130px] xs:max-w-[180px] sm:max-w-[220px];
+  }
+
+  .shad-otp {
+    @apply flex gap-1 xs:gap-2 sm:gap-3 justify-center w-full;
+  }
+
+  .shad-otp-slot {
+    @apply size-9 xs:size-10 sm:size-12 rounded-xl border-2 border-light-200 text-base xs:text-lg sm:text-xl font-bold flex items-center justify-center focus:border-brand;
+  }
+
+  .empty-list {
+    @apply text-light-200 text-center py-10 text-sm xs:text-base;
+  }
+
+  .empty-result {
+    @apply text-light-200 text-center py-4 text-xs xs:text-sm;
+  }
+
+  .file-details-thumbnail {
+    @apply flex items-center gap-3 p-3 rounded-xl bg-light-300/60 border border-light-200/30 mb-4;
+  }
+
+  .file-details-label {
+    @apply text-xs xs:text-sm text-light-200 font-medium;
+  }
+
+  .file-details-value {
+    @apply text-xs xs:text-sm text-dark-100 font-semibold truncate;
+  }
+
+  .share-wrapper {
+    @apply flex flex-col gap-3;
+  }
+
+  .share-input-field {
+    @apply rounded-xl border border-light-200/50 bg-white px-3.5 py-2.5 text-xs xs:text-sm placeholder:text-light-200 focus-visible:ring-1 focus-visible:ring-brand shadow-sm transition-all;
+  }
+
+  .share-remove-user {
+    @apply rounded-full bg-transparent p-1 hover:bg-light-300 text-red cursor-pointer transition-colors;
+  }
+
+  .modal-cancel-button {
+    @apply h-11 xs:h-12 w-full rounded-full bg-light-300 text-light-100 hover:bg-light-200/60 font-medium text-xs xs:text-sm transition-all duration-200 cursor-pointer;
+  }
+
+  .modal-submit-button {
+    @apply primary-btn h-11 xs:h-12 w-full text-white font-medium text-xs xs:text-sm transition-all duration-200 cursor-pointer;
+  }
+
+  .delete-confirmation {
+    @apply text-center text-xs xs:text-sm text-light-100 py-2;
+  }
+
+  .delete-file-name {
+    @apply font-semibold text-dark-100;
+  }
 
 /* ---------------- CUSTOM UTILITIES ---------------- */
 

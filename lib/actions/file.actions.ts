@@ -2,36 +2,32 @@
 import { InputFile } from "node-appwrite/file";
 import { createAdminClient, createSessionClient } from "../appwrite";
 import { appwriteConfig } from "../appwrite/config";
-import { ID, Models, Query } from "node-appwrite";
+import { ID, Models, Query, TablesDB } from "node-appwrite";
 import { getFileType, parseStringify, constructFileUrl } from "../utils";
+
+// import { url } from "inspector";
+// import { error } from "console";
 import {
-  CurrentUser,
-  FileDocument,
-  FileType,
   GetFilesProps,
   UploadFileProps,
   RenameFileProps,
   UpdateFileUsersProps,
   DeleteFileProps,
-  TotalSpaceUsed,
 } from "@/types";
 import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "./user.actions";
 
-export const handleError = async (
-  error: unknown,
-  message: string,
-): Promise<never> => {
+import { Client } from "node-appwrite";
+export const handleError = async (error: unknown, message: string) => {
   console.log(error, message);
   throw error;
 };
-
 export const uploadFile = async ({
   file,
   ownerId,
   accountId,
   path,
-}: UploadFileProps): Promise<unknown> => {
+}: UploadFileProps) => {
   const { storage, databases } = await createAdminClient();
   try {
     const inputFile = InputFile.fromBuffer(file, file.name);
@@ -73,11 +69,11 @@ export const uploadFile = async ({
 };
 
 const createQueries = (
-  currentUser: CurrentUser,
+  currentUser: Models.Document,
   types: string[] = [],
   searchText: string,
   sort: string,
-  limit: number | undefined,
+  limit: number,
 ) => {
   const queries = [
     Query.or([
@@ -88,7 +84,7 @@ const createQueries = (
 
   if (types.length > 0) queries.push(Query.equal("type", types));
   if (searchText) queries.push(Query.contains("name", searchText));
-  if (limit !== undefined) queries.push(Query.limit(limit));
+  if (limit) queries.push(Query.limit(limit));
 
   if (sort) {
     const [sortBy, orderBy] = sort.split("-");
@@ -106,13 +102,21 @@ export const getFiles = async ({
   searchText = "",
   sort = `$createdAt-desc`,
   limit,
-}: GetFilesProps): Promise<unknown> => {
+}: GetFilesProps) => {
   const { databases } = await createAdminClient();
   try {
     const currentUser = await getCurrentUser();
     if (!currentUser) {
       return null;
+      // throw new Error("User not found");
     }
+    // const tablesDB = new TablesDB(currentUser.$id);
+
+    // await tablesDB.listRows({
+    //   databaseId: appwriteConfig.databaseID,
+    //   tableId: appwriteConfig.filesCollectionID,
+    //   queries: [Query.equal("owner", [currentUser.$id])],
+    // });
 
     const queries = createQueries(currentUser, types, searchText, sort, limit);
 
@@ -133,7 +137,7 @@ export const renameFile = async ({
   name,
   extension,
   path,
-}: RenameFileProps): Promise<unknown> => {
+}: RenameFileProps) => {
   const { databases } = await createAdminClient();
 
   try {
@@ -157,7 +161,7 @@ export const updateFileUsers = async ({
   fileId,
   emails,
   path,
-}: UpdateFileUsersProps): Promise<unknown> => {
+}: UpdateFileUsersProps) => {
   const { databases } = await createAdminClient();
 
   try {
@@ -180,7 +184,7 @@ export const deleteFile = async ({
   fileId,
   bucketFileId,
   path,
-}: DeleteFileProps): Promise<unknown> => {
+}: DeleteFileProps) => {
   const { databases, storage } = await createAdminClient();
 
   try {
@@ -204,7 +208,7 @@ export const updateFile = async ({
   fileId,
   emails,
   path,
-}: UpdateFileUsersProps): Promise<unknown> => {
+}: UpdateFileUsersProps) => {
   const { databases } = await createAdminClient();
 
   try {
@@ -223,12 +227,24 @@ export const updateFile = async ({
   }
 };
 
-export async function getTotalSpaceUsed(): Promise<TotalSpaceUsed | undefined> {
-  try {
-    const sessionClient = await createSessionClient();
-    if (!sessionClient) throw new Error("User not authenticated");
+export const downloadFile = async (fileId: string) => {
+  const client = new Client();
 
-    const { databases } = sessionClient;
+  client
+    .setEndpoint(`${process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT_URL}`) // Your API Endpoint
+    .setProject(`${process.env.NEXT_PUBLIC_APPWRITE_PROJECT}`); // Your project ID
+
+  const downloadUrl = storage.getFileDownload(
+    process.env.NEXT_PUBLIC_APPWRITE_BUCKET!,
+    fileId,
+  );
+
+  window.location.href = downloadUrl;
+};
+
+export async function getTotalSpaceUsed() {
+  try {
+    const { databases } = await createSessionClient();
     const currentUser = await getCurrentUser();
     if (!currentUser) throw new Error("User not found");
 
@@ -238,7 +254,7 @@ export async function getTotalSpaceUsed(): Promise<TotalSpaceUsed | undefined> {
       [Query.equal("owner", [currentUser.$id])],
     );
 
-    const totalSpace: TotalSpaceUsed = {
+    const totalSpace = {
       image: { size: 0, latestDate: "" },
       document: { size: 0, latestDate: "" },
       video: { size: 0, latestDate: "" },
@@ -248,9 +264,8 @@ export async function getTotalSpaceUsed(): Promise<TotalSpaceUsed | undefined> {
       all: 2 * 1024 * 1024 * 1024 /* 2GB available bucket storage */,
     };
 
-    files.documents.forEach((rawFile: Models.Document) => {
-      const file = rawFile as FileDocument;
-      const fileType = file.type as FileType;
+    files.documents.forEach((file) => {
+      const fileType = file.type;
       totalSpace[fileType].size += file.size;
       totalSpace.used += file.size;
 
@@ -262,7 +277,7 @@ export async function getTotalSpaceUsed(): Promise<TotalSpaceUsed | undefined> {
       }
     });
 
-    return parseStringify(totalSpace) as TotalSpaceUsed;
+    return parseStringify(totalSpace);
   } catch (error) {
     handleError(error, "Failed to get total space used");
   }

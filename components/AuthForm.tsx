@@ -100,9 +100,9 @@ const AuthForm = ({ type }: { type: FormType }) => {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="auth-form flex flex-col gap-5"
+          className="auth-form flex flex-col gap-4 xs:gap-5"
         >
-          <h1 className="form-title text-4xl font-bold mb-10">
+          <h1 className="form-title">
             {type === "sign-in" ? "Sign In" : "Sign Up"}
           </h1>
           {type === "sign-up" && (

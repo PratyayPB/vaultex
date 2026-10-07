@@ -13,13 +13,14 @@ const Header = ({
   accountId: string;
 }) => {
   return (
-    <header className="header lg:flex justify-between gap-20 py-5 px-10 hidden ">
-      <Search />
-      <div className="header-wrapper flex justify-between  gap-8 ">
+    <header className="header hidden lg:flex items-center justify-between gap-6 xl:gap-10 py-4 xl:py-5 px-6 xl:px-8 bg-white border-b border-light-200/20 w-full shrink-0">
+      <div className="flex-1 max-w-md xl:max-w-lg 2xl:max-w-xl">
+        <Search />
+      </div>
+      <div className="header-wrapper flex items-center gap-4 xl:gap-6 shrink-0">
         <FileUploader
           ownerId={userId}
           accountId={accountId}
-          className="transition-all duration-300 hover:scale-125 cursor-pointer items self-end"
         />
         <form
           action={async () => {
@@ -29,14 +30,15 @@ const Header = ({
         >
           <Button
             type="submit"
-            className="border-2 border-red-100 bg-red-100 hover:bg-red-100 transition-all duration-300 hover:scale-125"
+            className="size-11 xl:size-12 rounded-full bg-brand/10 hover:bg-brand/20 text-brand p-0 flex items-center justify-center transition-all duration-200 cursor-pointer shadow-none border border-brand/20"
+            title="Sign Out"
           >
             <Image
               src="/assets/icons/logout.svg"
-              alt="upload"
-              width={24}
-              height={24}
-              className="w-6 filter transition-all opacity-100 duration-300 hover:scale-125 cursor-pointer "
+              alt="logout"
+              width={22}
+              height={22}
+              className="size-5 filter-brand"
             />
           </Button>
         </form>

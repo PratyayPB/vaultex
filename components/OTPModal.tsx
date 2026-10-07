@@ -59,26 +59,35 @@ const OTPModal = ({ email, accountId, onClose }: OTPModalProps) => {
           if (!open) onClose();
         }}
       >
-        <AlertDialogContent className="shad-alert-dialog flex flex-col gap-4 ">
-          <AlertDialogHeader className="relative flex justify-center">
-            <AlertDialogTitle className="h2 text-center flex justify-start gap-30">
+        <AlertDialogContent className="shad-alert-dialog flex flex-col gap-4 w-[92vw] max-w-[420px] sm:max-w-md p-4 xs:p-6 sm:p-8 rounded-2xl">
+          <AlertDialogHeader className="relative flex flex-col items-center justify-center">
+            <button
+              type="button"
+              onClick={() => {
+                setIsOpen(false);
+                onClose();
+              }}
+              className="absolute right-0 top-0 p-1 rounded-full hover:bg-light-300 transition-colors cursor-pointer"
+              aria-label="Close"
+            >
               <Image
                 src="/assets/icons/close-dark.svg"
                 alt="close"
                 width={20}
                 height={20}
-                onClick={() => setIsOpen(false)}
-                className="otp-close-button"
+                className="otp-close-button size-4 xs:size-5"
               />
+            </button>
+            <AlertDialogTitle className="h2 text-center pt-2">
               Enter your OTP
             </AlertDialogTitle>
-            <AlertDialogDescription className="subtitle-2 text-center text-light-100">
+            <AlertDialogDescription className="subtitle-2 text-center text-light-100 text-xs xs:text-sm mt-1">
               We&apos;ve sent a code to{" "}
-              <span className="font-bold text-dark-100 text-md">{email}</span>
+              <span className="font-bold text-dark-100 break-all">{email}</span>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <InputOTP maxLength={6} value={password} onChange={setPassword}>
-            <InputOTPGroup className="shad-otp mx-auto">
+            <InputOTPGroup className="shad-otp mx-auto my-2">
               <InputOTPSlot index={0} className="shad-otp-slot" />
               <InputOTPSlot index={1} className="shad-otp-slot" />
               <InputOTPSlot index={2} className="shad-otp-slot" />

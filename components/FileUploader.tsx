@@ -98,65 +98,53 @@ const FileUploader = ({ ownerId, accountId, className }: FileUploaderProps) => {
           <Image
             src="/assets/icons/upload.svg"
             alt="upload"
-            width={24}
-            height={24}
-          />{" "}
-          <p>Upload</p>
+            width={20}
+            height={20}
+            className="size-4 xs:size-5 shrink-0"
+          />
+          <p className="text-xs xs:text-sm font-semibold">Upload</p>
         </Button>
-        {files ? (
-          files.length > 0 && (
-            <ul className="uploader-preview-list ">
-              <h4 className="text-light-100 h4">Uploading</h4>
-              {files.map((file, index) => {
-                const { type, extension } = getFileType(file.name);
-                return (
-                  <li
-                    key={`${file.name}-${index}`}
-                    className="uploader-preview-item"
-                  >
-                    <div className="flex items-center gap-3">
-                      <Thumbnail
-                        type={type}
-                        extension={extension}
-                        url={convertFileToUrl(file)}
-                      />
-                      <div className="preview-item-name">
-                        {file.name}
-                        <Image
-                          src="/assets/icons/file-loader.gif"
-                          width={80}
-                          height={26}
-                          alt="Loader"
-                        />
-                      </div>
-                    </div>
-
-                    <Image
-                      src="/assets/icons/remove.svg"
-                      width={24}
-                      height={24}
-                      alt="Remove"
-                      onClick={(e) => handleRemoveFile(e, file.name)}
+        {files.length > 0 && (
+          <ul className="uploader-preview-list">
+            <h4 className="text-light-100 font-semibold text-xs xs:text-sm pb-1 border-b border-light-200/30">Uploading</h4>
+            {files.map((file, index) => {
+              const { type, extension } = getFileType(file.name);
+              return (
+                <li
+                  key={`${file.name}-${index}`}
+                  className="uploader-preview-item"
+                >
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
+                    <Thumbnail
+                      type={type}
+                      extension={extension}
+                      url={convertFileToUrl(file)}
+                      className="size-8 min-w-8 shrink-0"
                     />
-                  </li>
-                );
-              })}
-            </ul>
-          )
-        ) : (
-          <div className="uploader-empty  py-6 text-light-100 absolute left-0 top-full mt-2 max-w-400 bg-red-100 px-4  rounded-2xl shadow-lg z-50">
-            <Image
-              src="/assets/icons/upload.svg"
-              width={40}
-              height={40}
-              alt="Upload"
-              className="opacity-60"
-            />
-            <p className="mt-2 text-sm">No files selected</p>
-            <p className="text-xs opacity-70">
-              Drag & drop or browse to upload
-            </p>
-          </div>
+                    <div className="preview-item-name min-w-0 flex-1">
+                      <p className="truncate text-xs xs:text-sm">{file.name}</p>
+                      <Image
+                        src="/assets/icons/file-loader.gif"
+                        width={60}
+                        height={20}
+                        alt="Loader"
+                        className="h-4 w-auto"
+                      />
+                    </div>
+                  </div>
+
+                  <Image
+                    src="/assets/icons/remove.svg"
+                    width={20}
+                    height={20}
+                    alt="Remove"
+                    className="size-5 cursor-pointer opacity-70 hover:opacity-100 transition-opacity shrink-0"
+                    onClick={(e) => handleRemoveFile(e, file.name)}
+                  />
+                </li>
+              );
+            })}
+          </ul>
         )}
       </div>
     </>

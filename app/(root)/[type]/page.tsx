@@ -1,5 +1,6 @@
 import { FileType, SearchParamProps } from "@/types";
 import React from "react";
+import Image from "next/image";
 import Sort from "@/components/Sort";
 import { getFiles } from "@/lib/actions/file.actions";
 import Card from "@/components/Card";
@@ -19,34 +20,43 @@ const Page = async ({ searchParams, params }: SearchParamProps) => {
   } | null;
 
   return (
-    <div className="page-container p-8 h-[90vh] overflow-y-scroll">
-      <section className="w-full">
-        <h1 className="h1 capitalize">{type}</h1>
-        <div className="total-size-section flex justify-between  items-center px-1">
-          <p className="body-1 text-left">
-            Total: <span className="h-5">{files?.total ?? 0}</span>
-          </p>
-          <div className="sort-container">
-            <p className="subtitle-1 hidden sm:block text-light-100">
-              Sort by
-              <Sort />
+    <div className="page-container p-3 xs:p-4 sm:p-6 lg:p-8 max-w-[1800px] mx-auto w-full space-y-6">
+      <section className="w-full flex flex-col gap-4 pb-4 border-b border-light-200/30">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h1 className="h1 capitalize text-dark-100">{type}</h1>
+            <p className="body-2 text-light-200 mt-1">
+              Total: <span className="font-bold text-dark-100">{files?.total ?? 0}</span> files
             </p>
+          </div>
+
+          <div className="sort-container flex items-center gap-2 self-start sm:self-auto">
+            <span className="subtitle-2 text-light-100 hidden xs:inline-block">
+              Sort by:
+            </span>
+            <Sort />
           </div>
         </div>
       </section>
 
       {/* Render Files */}
-
       {files && files.total > 0 ? (
-        <section className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4  gap-4">
+        <section className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 xs:gap-4 sm:gap-5">
           {files.documents.map((file: FileDocument) => (
-            <h1 className="h1" key={file.$id}>
-              <Card key={file.$id} file={file} />
-            </h1>
+            <Card key={file.$id} file={file} />
           ))}
         </section>
       ) : (
-        <p className="empty-list">No files uploaded</p>
+        <div className="flex flex-col items-center justify-center py-20 text-center">
+          <Image
+            src="/assets/icons/file-document-light.svg"
+            alt="Empty"
+            width={56}
+            height={56}
+            className="size-14 opacity-30 mb-3"
+          />
+          <p className="empty-list text-light-200 text-sm xs:text-base font-medium">No files uploaded in this category</p>
+        </div>
       )}
     </div>
   );
