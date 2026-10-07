@@ -365,7 +365,7 @@
   .delete-file-name {
     @apply font-semibold text-dark-100;
   }
-
+}
 /* ---------------- CUSTOM UTILITIES ---------------- */
 
 @layer utilities {
