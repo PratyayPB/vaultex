@@ -29,15 +29,19 @@
 ## Overview
 
 ### What is the project?
-Vaultex is a cloud-based file management platform similar to Google Drive, built to allow users to upload, manage, and securely share their files. It offers a personalized dashboard to track storage usage visually and includes dedicated sections for images, videos, documents, and other file types. 
+
+Vaultex is a cloud-based file management platform similar to Google Drive, built to allow users to upload, manage, and securely share their files. It offers a personalized dashboard to track storage usage visually and includes dedicated sections for images, videos, documents, and other file types.
 
 ### Problem Statement
+
 Managing and sharing files securely with specific individuals often requires complex setups or subscriptions. There is a need for a lightweight, accessible solution that strictly enforces privacy through direct email-based access control.
 
 ### Solution
+
 Vaultex solves this by integrating Appwrite's robust backend services to provide OTP-based email authentication and file-level permissions. Users can effortlessly upload files and selectively grant access to specific email addresses, ensuring complete control over their digital assets.
 
 ### Project Goals
+
 - Deliver a clean, highly responsive, and user-friendly interface.
 - Ensure strict, fine-grained access control for file sharing.
 - Provide real-time, visual storage analytics.
@@ -64,6 +68,7 @@ Vaultex solves this by integrating Appwrite's robust backend services to provide
 ![Secure Sharing](https://ik.imagekit.io/ulycoljug/Portfolio-resources/vaultex/Screenshot%202026-02-22%20165745.png)
 
 ### Demo
+
 **Live Application:** [https://vaultex-phi.vercel.app/](https://vaultex-phi.vercel.app/)
 
 ---
@@ -71,6 +76,7 @@ Vaultex solves this by integrating Appwrite's robust backend services to provide
 ## Tech Stack
 
 ### Frontend
+
 - Next.js (App Router)
 - TypeScript
 - React
@@ -79,19 +85,21 @@ Vaultex solves this by integrating Appwrite's robust backend services to provide
 - Recharts
 
 ### Backend (BaaS)
+
 - Appwrite (Authentication, Database, Storage)
 
 ### Deployment
+
 - Vercel
 
 ---
 
 ## Architecture
 
-Vaultex follows a modern serverless architecture utilizing a Backend-as-a-Service (BaaS) model. 
+Vaultex follows a modern serverless architecture utilizing a Backend-as-a-Service (BaaS) model.
 
 - **Client Layer:** Built with Next.js App Router for optimal Server-Side Rendering (SSR) and Client-Side Rendering (CSR). Tailwind CSS and shadcn/ui handle the UI design.
-- **Backend Layer:** Appwrite manages all backend operations. It handles OTP authentication, stores file metadata in its NoSQL document database, and manages actual file binaries in its storage buckets. 
+- **Backend Layer:** Appwrite manages all backend operations. It handles OTP authentication, stores file metadata in its NoSQL document database, and manages actual file binaries in its storage buckets.
 - **Data Flow:** When a user uploads a file, the binary is sent to Appwrite Storage. Upon success, a metadata document (including file URL, size, owner, and shared users) is created in the Appwrite Database. Access control lists (ACLs) are updated dynamically when a user shares a file.
 
 ---
@@ -118,6 +126,28 @@ vaultex/
 ---
 
 ## Getting Started
+
+### Prerequisites
+
+- Node.js
+- npm
+- Git
+- Appwrite project setup (Cloud or Self-hosted)
+
+### Clone the Repository
+
+```bash
+git clone https://github.com/PratyayPB/vaultex.git
+cd vaultex
+```
+
+### Install Dependencies
+
+```bash
+npm install
+```
+
+### Run the Development Server
 
 ### Prerequisites
 
@@ -181,9 +211,9 @@ Vaultex uses Appwrite's database service to manage metadata.
 
 ### Core Entities
 
-| Entity | Purpose |
-|---|---|
-| Users Collection | Stores user profile data (`fullName`, `email`, `avatar`, `accountId`) |
+| Entity           | Purpose                                                                                    |
+| ---------------- | ------------------------------------------------------------------------------------------ |
+| Users Collection | Stores user profile data (`fullName`, `email`, `avatar`, `accountId`)                      |
 | Files Collection | Stores metadata for uploaded files (`type`, `name`, `url`, `size`, `owner`, `users`, etc.) |
 
 ---
@@ -191,10 +221,12 @@ Vaultex uses Appwrite's database service to manage metadata.
 ## Authentication & Authorization
 
 ### Authentication
+
 - Passwordless OTP (One-Time Password) sent via email through Appwrite Auth.
 - Secure session management managed directly by Appwrite SDK.
 
 ### Authorization
+
 - File ownership is established upon upload.
 - Document-level security: The file owner can modify the `users` array in the file document.
 - Appwrite permissions dynamically restrict read/write access so unauthorized users cannot query or view the file.
