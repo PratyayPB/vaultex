@@ -1,7 +1,5 @@
 @import "tailwindcss";
 
-@import "tailwindcss";
-
 /* ================= BASE ================= */
 
 @layer base {
@@ -355,7 +353,7 @@
   }
 
   .modal-submit-button {
-    @apply primary-btn h-11 xs:h-12 w-full text-white font-medium text-xs xs:text-sm transition-all duration-200 cursor-pointer;
+    @apply bg-brand hover:bg-brand-100 rounded-full h-11 xs:h-12 w-full text-white font-medium text-xs xs:text-sm transition-all duration-200 cursor-pointer;
   }
 
   .delete-confirmation {

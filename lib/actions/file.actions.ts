@@ -69,16 +69,16 @@ export const uploadFile = async ({
 };
 
 const createQueries = (
-  currentUser: Models.Document,
+  currentUser: Models.Document & { email?: string },
   types: string[] = [],
-  searchText: string,
-  sort: string,
-  limit: number,
+  searchText: string = "",
+  sort: string = "",
+  limit?: number,
 ) => {
   const queries = [
     Query.or([
       Query.equal("owner", [currentUser.$id]),
-      Query.contains("users", [currentUser.email]),
+      Query.contains("users", [currentUser.email || ""]),
     ]),
   ];
 
@@ -228,23 +228,23 @@ export const updateFile = async ({
 };
 
 export const downloadFile = async (fileId: string) => {
-  const client = new Client();
-
-  client
-    .setEndpoint(`${process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT_URL}`) // Your API Endpoint
-    .setProject(`${process.env.NEXT_PUBLIC_APPWRITE_PROJECT}`); // Your project ID
-
-  const downloadUrl = storage.getFileDownload(
-    process.env.NEXT_PUBLIC_APPWRITE_BUCKET!,
-    fileId,
-  );
-
-  window.location.href = downloadUrl;
+  try {
+    const { storage } = await createAdminClient();
+    const downloadUrl = storage.getFileDownload(
+      appwriteConfig.bucketID,
+      fileId,
+    );
+    return downloadUrl;
+  } catch (error) {
+    handleError(error, "Failed to download file");
+  }
 };
 
 export async function getTotalSpaceUsed() {
   try {
-    const { databases } = await createSessionClient();
+    const session = await createSessionClient();
+    if (!session) throw new Error("Failed to create session client");
+    const { databases } = session;
     const currentUser = await getCurrentUser();
     if (!currentUser) throw new Error("User not found");
 
@@ -264,16 +264,30 @@ export async function getTotalSpaceUsed() {
       all: 2 * 1024 * 1024 * 1024 /* 2GB available bucket storage */,
     };
 
-    files.documents.forEach((file) => {
-      const fileType = file.type;
-      totalSpace[fileType].size += file.size;
-      totalSpace.used += file.size;
-
+    files.documents.forEach((file: any) => {
+      const fileType = file.type as keyof typeof totalSpace;
       if (
-        !totalSpace[fileType].latestDate ||
-        new Date(file.$updatedAt) > new Date(totalSpace[fileType].latestDate)
+        totalSpace[fileType] &&
+        typeof totalSpace[fileType] === "object" &&
+        "size" in totalSpace[fileType]
       ) {
-        totalSpace[fileType].latestDate = file.$updatedAt;
+        (totalSpace[fileType] as { size: number; latestDate: string }).size +=
+          file.size;
+        totalSpace.used += file.size;
+
+        if (
+          !(totalSpace[fileType] as { size: number; latestDate: string })
+            .latestDate ||
+          new Date(file.$updatedAt) >
+            new Date(
+              (totalSpace[fileType] as { size: number; latestDate: string })
+                .latestDate,
+            )
+        ) {
+          (
+            totalSpace[fileType] as { size: number; latestDate: string }
+          ).latestDate = file.$updatedAt;
+        }
       }
     });
 
